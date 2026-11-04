@@ -1,0 +1,366 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Max EP01</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000;font-family:Inter,sans-serif;color:#fff}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0B1029}
+#world{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0}
+#world svg{position:absolute;left:0;top:0;overflow:visible}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.5) 100%)}
+#pops{position:absolute;inset:0;pointer-events:none}
+.card{position:absolute;left:60px;top:235px;width:960px;border-radius:36px;background:#262624;border:3px solid #3d3c38;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04) inset;color:#ECEAE2;overflow:hidden;opacity:0;transform-origin:50% 100%}
+.card .bar{height:64px;background:#1E1D1B;border-bottom:2px solid #33322e;display:flex;align-items:center;gap:12px;padding:0 24px;font-size:24px;font-weight:700}
+.card .bar .dot{width:14px;height:14px;border-radius:50%}
+.in{padding:26px 30px;font-size:27px;line-height:1.4}
+.box{background:#30302E;border:2px solid #4a4944;border-radius:22px;padding:18px 20px 70px;position:relative;min-height:150px;font-size:27px}
+.plus{position:absolute;left:14px;bottom:12px;width:48px;height:48px;border-radius:14px;border:2px solid #57564f;display:grid;place-items:center;font-size:34px;font-weight:300}
+.send{position:absolute;right:14px;bottom:12px;width:48px;height:48px;border-radius:14px;background:#D97757;display:grid;place-items:center}
+.chip{display:inline-flex;align-items:center;gap:10px;background:#3a3935;border:2px solid #4d4c47;border-radius:14px;padding:8px 14px 8px 8px;font-size:21px;margin:0 10px 12px 0;opacity:0}
+.chip i{width:40px;height:46px;border-radius:7px;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:900;color:#fff}
+.menu{position:absolute;background:#2f2e2b;border:2px solid #4a4944;border-radius:18px;padding:8px;width:420px;box-shadow:0 20px 50px rgba(0,0,0,.5);opacity:0}
+.mi{display:flex;gap:14px;align-items:center;font-size:24px;padding:14px;border-radius:12px}
+.um{background:#141413;border-radius:20px;padding:14px 20px;margin-left:auto;max-width:640px;font-size:25px}
+.ans{font-size:24px;line-height:1.45;margin-top:16px;color:#ECEAE2}
+.sk{height:16px;border-radius:8px;background:#45443f;margin-top:14px}
+.caret{display:inline-block;width:3px;height:28px;background:#ECEAE2;vertical-align:-5px;margin-left:2px}
+.hl{background:rgba(255,212,59,.25);box-shadow:inset 0 -4px 0 #FFD43B;border-radius:4px}
+.cur{position:absolute;width:64px;height:64px;left:0;top:0;z-index:5;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.badge{display:inline-flex;align-items:center;gap:10px;font-weight:900;border-radius:999px;padding:10px 22px}
+/* HUD */
+#hud{position:absolute;left:44px;right:44px;top:110px;display:flex;justify-content:space-between;align-items:center}
+#tag{font-size:26px;font-weight:900;letter-spacing:.08em;display:flex;gap:10px;align-items:center}
+#tag b{background:#FF7A1A;color:#1a0d00;padding:4px 12px;border-radius:10px}
+#cnt{display:flex;gap:8px;align-items:center;font-size:24px;font-weight:900}
+#cnt .s{width:34px;height:10px;border-radius:5px;background:rgba(255,255,255,.18)}
+/* captions */
+#cap{position:absolute;left:50px;width:980px;top:1430px;height:230px}
+#cap .chunk{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:0 44px}
+#cap .w{display:inline-block;font-weight:900;font-size:84px;line-height:1.08;letter-spacing:-.01em;color:#fff;-webkit-text-stroke:11px #000;paint-order:stroke fill;text-shadow:0 7px 0 rgba(0,0,0,.65);transform-origin:50% 60%}
+#cta{position:absolute;inset:0;pointer-events:none}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+#fade{position:absolute;inset:0;background:#000;pointer-events:none}
+</style></head><body>
+<div id="stage">
+  <div id="world"><svg id="room" width="1080" height="1920"></svg></div>
+  <div id="vig"></div>
+  <div id="pops"></div>
+  <div id="hud"><div id="tag">MAX <b>CLAUDE TRICKS</b></div><div id="cnt"><span id="cntT">TRICK 0/5</span><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div></div>
+  <div id="cta"></div>
+  <div id="cap"></div>
+  <div id="flash"></div><div id="fade"></div>
+</div>
+<script src="rig.js"></script>
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const pulse = (t, T, w = .25) => Math.exp(-Math.pow((t - T) / w, 2));
+const EV = []; const ev = (type, t, x = {}) => EV.push(Object.assign({ type, t: +(+t).toFixed(3) }, x));
+let WORDS, LINES, DUR, MAX;
+const norm = s => s.toLowerCase().replace(/[^a-z0-9']/g, '');
+const Ln = id => LINES.find(l => l.id === id);
+function Wd(id, pre, n = 0) { const li = Ln(id).i; const ws = WORDS.filter(w => w.li === li && norm(w.w).startsWith(pre)); if (!ws[n]) throw Error('word ' + id + ' ' + pre); return ws[n]; }
+const typed = (s, t, a, b) => s.slice(0, Math.round(s.length * p01(t, a, b)));
+const caret = t => `<span class="caret" style="opacity:${Math.floor(t * 2.4) % 2 ? 0 : 1}"></span>`;
+const SPARK = s => { let o = `<svg width="${s}" height="${s}" viewBox="-50 -50 100 100">`; for (let i = 0; i < 11; i++) { const a = i / 11 * Math.PI * 2 + .2 * hash(i); const L = [38, 30, 44, 33, 40, 29, 42, 35, 31, 43, 36][i]; o += `<line x1="${Math.cos(a) * 6}" y1="${Math.sin(a) * 6}" x2="${Math.cos(a) * L}" y2="${Math.sin(a) * L}" stroke="#D97757" stroke-width="9" stroke-linecap="round"/>`; } return o + '</svg>'; };
+const UP = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>`;
+const CUR = `<svg class="cur" viewBox="0 0 24 24"><path d="M4 2.5v17.2l4.6-4.3 2.9 6.6 3.1-1.4-2.9-6.4 6.3-.4Z" fill="#fff" stroke="#000" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+const ICO = {
+  up: `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>`,
+  folder: `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M3 6h6l2 2h10v11H3Z"/></svg>`,
+  app: `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/></svg>`,
+  pen: `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
+  q: `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 1-1 1.7V15"/><circle cx="12" cy="19" r=".6" fill="#fff"/></svg>`,
+  clip: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ECEAE2" stroke-width="2" stroke-linecap="round"><path d="m21.4 11-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>`,
+};
+
+// ───────── ROOM ─────────
+let starSel = [], winSel = [], steam, clouds, lampG;
+function buildRoom() {
+  const r = $('#room');
+  let stars = ''; for (let i = 0; i < 40; i++) stars += `<circle class="star" cx="${90 + hash(i) * 400}" cy="${280 + hash(i + 40) * 330}" r="${1.2 + hash(i + 80) * 2.2}" fill="#fff"/>`;
+  let city = '', wins = ''; for (let i = 0; i < 12; i++) { const x = 80 + i * 36, h = 70 + hash(i + 300) * 170; city += `<rect x="${x}" y="${800 - h}" width="34" height="${h}" fill="#1B1F45"/>`;
+    for (let k = 0; k < 5; k++) wins += `<rect class="win" x="${x + 5 + hash(i * 9 + k) * 22}" y="${800 - h + 10 + hash(i * 5 + k) * (h - 20)}" width="5" height="7" fill="#FFD27A"/>`; }
+  let books = ''; const bc = ['#FF7A1A', '#2E9BFF', '#A35CFF', '#FFD43B', '#26c281', '#ef4b5f', '#E0E6FF'];
+  [[420, 0], [560, 1], [700, 2]].forEach(([y, s]) => { let x = 640; while (x < 990) { const w = 22 + hash(x + s) * 18, h = 90 + hash(x * 3 + s) * 30; if (hash(x + s * 7) > .86) { x += 40; continue; }
+      books += `<rect x="${x}" y="${y - h}" width="${w}" height="${h}" rx="3" fill="${bc[Math.floor(hash(x + s * 3) * 7)]}" opacity=".9"/><rect x="${x + 4}" y="${y - h + 14}" width="${w - 8}" height="4" fill="rgba(0,0,0,.25)"/>`; x += w + 3; } });
+  r.innerHTML = `<defs>
+    <linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#161D45"/><stop offset="1" stop-color="#0B1029"/></linearGradient>
+    <linearGradient id="nightG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A0F35"/><stop offset="1" stop-color="#3A2A6E"/></linearGradient>
+    <radialGradient id="moonG"><stop offset="0" stop-color="#FFF6D8"/><stop offset=".3" stop-color="#FFF0C0" stop-opacity=".6"/><stop offset="1" stop-color="#FFF0C0" stop-opacity="0"/></radialGradient>
+    <radialGradient id="lampG"><stop offset="0" stop-color="#FFC66B" stop-opacity=".55"/><stop offset="1" stop-color="#FFC66B" stop-opacity="0"/></radialGradient>
+    <radialGradient id="screenG"><stop offset="0" stop-color="#7FB2FF" stop-opacity=".35"/><stop offset="1" stop-color="#7FB2FF" stop-opacity="0"/></radialGradient>
+    <linearGradient id="deskG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A3A2A"/><stop offset="1" stop-color="#2A1A12"/></linearGradient>
+    <linearGradient id="lapG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D8DDE6"/><stop offset="1" stop-color="#9AA2B0"/></linearGradient>
+    <linearGradient id="chairG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B2F7A"/><stop offset="1" stop-color="#1A1440"/></linearGradient></defs>
+  <rect x="-300" y="-300" width="1680" height="2600" fill="url(#wallG)"/>
+  ${Array.from({ length: 14 }, (_, i) => `<rect x="${-300 + i * 120}" y="-300" width="2" height="2600" fill="rgba(255,255,255,.025)"/>`).join('')}
+  <g><rect x="70" y="250" width="440" height="570" rx="10" fill="url(#nightG)"/>
+    <circle cx="400" cy="360" r="120" fill="url(#moonG)"/><circle cx="400" cy="360" r="42" fill="#FFF3D0"/><circle cx="388" cy="350" r="8" fill="#EADDB5"/><circle cx="414" cy="372" r="6" fill="#EADDB5"/>
+    <g id="stars">${stars}</g><g id="clouds"><ellipse cx="200" cy="470" rx="110" ry="16" fill="#5A4A9A" opacity=".5"/><ellipse cx="430" cy="540" rx="90" ry="12" fill="#5A4A9A" opacity=".4"/></g>
+    ${city}${wins}
+    <rect x="62" y="242" width="456" height="586" rx="14" fill="none" stroke="#2C335F" stroke-width="18"/><rect x="282" y="250" width="16" height="570" fill="#2C335F"/><rect x="70" y="528" width="440" height="14" fill="#2C335F"/>
+    <rect x="40" y="826" width="500" height="24" rx="6" fill="#262D57"/></g>
+  <g><rect x="620" y="290" width="390" height="560" rx="10" fill="#1A1F48"/>${books}
+    ${[420, 560, 700, 840].map(y => `<rect x="610" y="${y}" width="410" height="16" rx="4" fill="#2C335F"/>`).join('')}
+    <g transform="translate(940,834)"><rect x="-26" y="-40" width="52" height="40" rx="8" fill="#C9A13B"/><path d="M -10,-40 C -30,-90 -60,-80 -50,-60 M 0,-40 C 0,-100 20,-110 30,-90 M 10,-40 C 40,-80 60,-60 50,-50" stroke="#26a865" stroke-width="10" fill="none" stroke-linecap="round"/></g></g>
+  <g id="neon" transform="translate(880,1100)"><text x="0" y="0" text-anchor="middle" font-family="Inter" font-weight="900" font-size="96" fill="none" stroke="#C48BFF" stroke-width="5" style="filter:drop-shadow(0 0 14px #A35CFF) drop-shadow(0 0 30px #A35CFF)">MAX</text></g>
+  <g transform="translate(0,210)"><path d="M 330,1500 L 330,960 C 330,840 750,840 750,960 L 750,1500 Z" fill="url(#chairG)"/><path d="M 380,1500 L 380,980 C 380,900 700,900 700,980 L 700,1500" stroke="#5A4AB0" stroke-width="6" fill="none"/>
+  </g><g id="hostBody"></g>
+  <g id="hostArms"></g>
+  <g transform="translate(0,210)"><ellipse cx="540" cy="1250" rx="420" ry="260" fill="url(#screenG)"/>
+  <g id="lamp"><circle cx="150" cy="1350" r="260" fill="url(#lampG)" id="lampGlow"/><path d="M 110,1500 L 190,1500 L 160,1460 L 140,1460 Z" fill="#2C2C38"/><path d="M 150,1460 L 150,1340 L 210,1290" stroke="#2C2C38" stroke-width="10" fill="none"/><path d="M 175,1265 L 255,1285 L 230,1335 Z" fill="#FFB347"/></g>
+  <rect x="-200" y="1490" width="1480" height="40" rx="10" fill="#6B4630"/><rect x="-200" y="1525" width="1480" height="600" fill="url(#deskG)"/>
+  <g id="laptop"><rect x="250" y="1488" width="580" height="22" rx="8" fill="#AEB5C2"/><rect x="270" y="1170" width="540" height="330" rx="20" fill="url(#lapG)"/><rect x="270" y="1170" width="540" height="330" rx="20" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3"/>
+    <g transform="translate(540,1330)" opacity=".55">${'<circle r="26" fill="none" stroke="#fff" stroke-width="5"/><path d="M -10,-2 L -2,8 L 12,-10" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>'}</g></g>
+  <g transform="translate(910,1500)"><rect x="-38" y="-80" width="76" height="86" rx="12" fill="#FF7A1A"/><path d="M 38,-60 C 70,-60 70,-20 38,-20" stroke="#FF7A1A" stroke-width="10" fill="none"/><text x="0" y="-26" text-anchor="middle" font-family="Inter" font-weight="900" font-size="28" fill="#1a0d00">AI</text>
+    <g id="steam">${[0, 1, 2].map(k => `<path class="st" d="M ${-16 + k * 16},-92 C ${-26 + k * 16},-120 ${-6 + k * 16},-140 ${-16 + k * 16},-170" stroke="rgba(255,255,255,.35)" stroke-width="6" fill="none" stroke-linecap="round"/>`).join('')}</g></g>
+  <g transform="translate(140,1520)"><rect x="-50" y="-14" width="100" height="16" rx="5" fill="#111"/></g>
+  <g id="plant" transform="translate(1010,1930)">${[[-40, -260, -80], [10, -300, -20], [60, -240, 40], [-90, -200, -120], [90, -190, 70]].map(([x, y, c]) => `<path d="M 0,0 C ${c},${y * .5} ${x},${y * .8} ${x},${y} C ${x + 30},${y * .7} ${c / 2 + 20},${y * .4} 0,0 Z" fill="#26a865" stroke="#1b7a49" stroke-width="3"/>`).join('')}</g></g>`;
+  starSel = $$('.star', r); winSel = $$('.win', r); steam = $$('.st', r); clouds = $('#clouds'); lampG = $('#lampGlow');
+  MAX = new Char('MAX', LOOKS.HOST, $('#hostBody'), { armsParent: $('#hostArms') });
+}
+
+// ───────── DIRECTION: Max acting ─────────
+const POSE = {
+  type: [{ x: -55, y: -40 }, { x: 55, y: -40 }],
+  rest: [{ x: -80, y: -30 }, { x: 80, y: -30 }],
+  gestR: [{ x: -55, y: -40 }, { x: 95, y: -215 }],
+  gestL: [{ x: -95, y: -215 }, { x: 55, y: -40 }],
+  pointUp: [{ x: -55, y: -40 }, { x: 125, y: -390 }],
+  pointBoth: [{ x: -130, y: -360 }, { x: 130, y: -360 }],
+  shrug: [{ x: -195, y: -205 }, { x: 195, y: -205 }],
+  chin: [{ x: -55, y: -40 }, { x: 18, y: -280 }],
+  wave: [{ x: -55, y: -40 }, { x: 170, y: -330 }],
+  open: [{ x: -165, y: -180 }, { x: 165, y: -180 }],
+  you: [{ x: -55, y: -40 }, { x: 40, y: -230 }],
+};
+function poseAt(keys, t, ease = .28) { let A = POSE[keys[0][1]].map(o => ({ ...o }));
+  for (let i = 1; i < keys.length; i++) { const [tk, pn] = keys[i]; if (t < tk) break; const u = eio(p01(t, tk, tk + ease)), B = POSE[pn]; A = A.map((o, j) => ({ x: lerp(o.x, B[j].x, u), y: lerp(o.y, B[j].y, u) })); }
+  return A; }
+function KF(keys, t, ease = .25) { let cur = keys[0][1];
+  for (let i = 1; i < keys.length; i++) { const [tk, v] = keys[i]; if (t < tk) break; const u = sstep(p01(t, tk, tk + ease)); const o = {}; for (const k in v) o[k] = lerp(cur[k] ?? 0, v[k], u); cur = Object.assign({}, cur, o); }
+  return cur; }
+function blinkAt(t) { let b = 0; for (let k = 0; k < 40; k++) { const bt = .9 + k * 2.6 + hash(k * 7) * 1.8; const d = t - bt; if (d > 0 && d < .16) b = Math.max(b, Math.sin(d / .16 * Math.PI)); } return b; }
+let D = {};
+function direct() {
+  const L = Ln, W = Wd;
+  D.expr = [[0, { smile: .2, brow: .4, furrow: .3, lookX: 0, lookY: 0, wide: 0, tilt: 0, squint: 0 }],
+    [W('hook', 'search').s, { smile: -.1, brow: .6, furrow: .5, tilt: -4 }], [W('hook', "that's").s, { smile: -.35, brow: -.1, furrow: .6, tilt: 3, lookX: .3 }],
+    [L('intro').s, { smile: .7, brow: .5, furrow: 0, tilt: 0, lookX: 0 }], [L('t1').s, { smile: .45, brow: .3 }], [W('t1b', 'claude').s, { smile: .8, squint: .3, brow: .5 }],
+    [L('t2').s, { smile: .45, squint: 0, brow: .3 }], [W('t2b', 'even').s, { smile: .7, brow: .8, wide: .3 }], [L('t3').s, { smile: .5, wide: 0, brow: .4 }],
+    [W('t3b', 'real').s, { smile: .9, wide: .5, brow: .9 }], [L('t4').s, { smile: -.2, brow: .2, furrow: .5, wide: 0 }], [W('t4', 'edit').s, { smile: .55, furrow: 0, brow: .5 }],
+    [L('t5').s, { smile: .7, brow: .6, tilt: 3 }], [W('t5', 'ask').s, { smile: .5, brow: .3, tilt: 0, lookY: -.2 }], [L('t5b').s, { smile: 1, squint: .4, brow: .6, lookY: 0 }],
+    [L('end1').s, { smile: .55, squint: 0, brow: .7, tilt: -4, lookX: 0 }], [L('end2').s, { smile: .75, brow: .4, tilt: 0 }]];
+  D.pose = [[0, 'type'], [W('hook', 'search').s, 'gestR'], [W('hook', "that's").s, 'shrug'], [L('intro').s + .1, 'type'], [W('intro', 'five').s - .1, 'pointUp'], [L('intro').e + .1, 'type'],
+    [W('t1', 'plus').s, 'gestR'], [L('t1').e + .1, 'type'], [W('t1b', 'claude').s, 'open'], [L('t1b').e, 'type'], [L('t2').s + .2, 'gestL'], [L('t2').e, 'type'],
+    [W('t2b', 'even').s, 'pointUp'], [L('t2b').e + .1, 'type'], [L('t3').s + .3, 'gestR'], [L('t3').e, 'type'], [W('t3b', 'real').s, 'open'], [L('t3b').e, 'type'],
+    [L('t4').s, 'shrug'], [W('t4', 'edit').s - .1, 'type'], [W('t4', 'instead').s, 'gestL'], [L('t4').e, 'type'], [L('t5').s, 'pointUp'], [W('t5', 'end').s, 'type'],
+    [L('t5b').s, 'open'], [L('t5b').e, 'type'], [L('end1').s, 'chin'], [W('end1', 'tell').s, 'you'], [L('end2').s, 'type'], [W('end2', 'follow').s, 'wave'], [L('end2').e + .4, 'rest']];
+  // typing windows (hands jitter + key sfx)
+  D.typing = [[0, W('hook', 'search').s], [W('t3', 'ask').s, L('t3').e], [W('t4', 'edit').s, W('t4', 'instead').s], [W('t5', 'end').s, L('t5').e]];
+}
+function stateMax(t) {
+  const l = LINES.find(l => t >= l.s - .1 && t <= l.e + .15);
+  const mouth = l ? visemeAt(l.phones, t) : null;
+  let beat = 0; if (l) for (const w of WORDS) if (w.li === l.i) beat = Math.max(beat, pulse(t, w.s + .05, .09) * (w.e - w.s > .25 ? 1 : .4));
+  const e = KF(D.expr, t);
+  const st = Object.assign({ t, x: 540, y: 1745, scale: 1.36, stand: 0, blink: blinkAt(t), mouth, nod: beat * 5, glow: .3 }, e);
+  st.brow += beat * .3; st.tilt += noise(t * .7, 4) * 2.5; st.lookX += noise(t * .4, 9) * .12;
+  const p = poseAt(D.pose, t); st.handL = p[0]; st.handR = p[1];
+  if (l) st.handR = { x: st.handR.x + Math.sin(t * 6) * 5 * (beat + .2), y: st.handR.y - beat * 10 };
+  if (D.typing.some(([a, b]) => t > a && t < b)) { st.handL.y += Math.sin(t * 31) * 4; st.handR.y += Math.cos(t * 27) * 4; }
+  return st;
+}
+
+// ───────── POPUP CARDS ─────────
+const CARDS = {};
+function card(id, h, html, title) { const d = document.createElement('div'); d.className = 'card'; d.id = 'k-' + id; d.style.height = h + 'px';
+  d.innerHTML = (title !== null ? `<div class="bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div><span style="margin-left:14px;display:flex;gap:10px;align-items:center">${SPARK(30)}${title || 'Claude'}</span></div>` : '') + html + CUR;
+  $('#pops').appendChild(d); CARDS[id] = d; return d; }
+function buildCards() {
+  card('hook', 520, `<div class="in" style="padding:40px">
+     <div style="display:flex;align-items:center;gap:18px;background:#fff;color:#222;border-radius:60px;padding:26px 34px;font-size:40px;box-shadow:0 10px 30px rgba(0,0,0,.3)">
+       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span id="hk-q"></span></div>
+     <div style="margin-top:36px;display:flex;gap:16px;align-items:center;font-size:30px;color:#bbb"><span class="badge" style="background:#3a3935">one question</span>→<span class="badge" style="background:#3a3935">one answer</span>→<span class="badge" style="background:#3a3935">close tab</span></div>
+     <div id="hk-x" style="position:absolute;left:0;right:0;top:300px;text-align:center;font-size:150px;font-weight:900;color:#ef4b5f;-webkit-text-stroke:8px #000;paint-order:stroke fill;opacity:0">WASTE</div></div>`, null);
+  CARDS.hook.style.background = '#1b2050'; CARDS.hook.style.borderColor = '#2E9BFF';
+  card('five', 560, `<div class="in" style="text-align:center;padding-top:40px"><div id="fv-n" style="font-size:200px;font-weight:900;line-height:1;color:#FFD43B;-webkit-text-stroke:8px #000;paint-order:stroke fill">5</div>
+    <div style="font-size:52px;font-weight:900;margin-top:4px">CLAUDE TRICKS</div>
+    <div style="display:flex;justify-content:center;gap:22px;margin-top:40px">${[['up', '#2E9BFF'], ['folder', '#A35CFF'], ['app', '#26c281'], ['pen', '#FF7A1A'], ['q', '#ef4b5f']].map(([k, c], i) => `<div class="fv-i" style="width:120px;height:120px;border-radius:30px;background:${c};display:grid;place-items:center;opacity:0">${ICO[k]}</div>`).join('')}</div></div>`, null);
+  CARDS.five.style.background = '#151a40'; CARDS.five.style.borderColor = '#A35CFF';
+  card('t1', 680, `<div class="in"><div style="font-family:'Liberation Serif',Georgia,serif;font-size:42px;text-align:center;margin:34px 0 40px;display:flex;justify-content:center;gap:14px;align-items:center">${SPARK(46)}How can I help you today?</div>
+    <div class="box" id="t1-box"><div id="t1-files"><div class="chip"><i style="background:#E5484D">PDF</i>lecture_notes.pdf</div><div class="chip"><i style="background:#d8a93b">IMG</i>whiteboard.jpg</div><div class="chip"><i style="background:#2E6BE5">DOC</i>essay_draft.docx</div></div>
+      <div id="t1-txt"><span style="color:#8b897f">How can I help you today?</span></div><div class="plus" id="t1-plus">+</div><div class="send">${UP}</div></div>
+    <div class="menu" id="t1-menu"><div class="mi" id="t1-mi">${ICO.clip}Add files or photos</div><div class="mi" style="color:#aaa">…</div></div>
+    <div id="t1-sum" style="opacity:0;margin-top:22px;display:flex;gap:16px;align-items:flex-start">${SPARK(40)}<div style="flex:1"><b>Got it: 3 files read.</b><div class="sk" style="width:90%"></div><div class="sk" style="width:75%"></div><div class="sk" style="width:82%"></div></div></div></div>`);
+  card('t2', 690, `<div style="display:flex;height:100%"><div style="width:250px;background:#1E1D1B;border-right:2px solid #33322e;padding:24px 18px;font-size:24px">
+      <div style="padding:12px;border-radius:12px">+ New chat</div><div style="padding:12px;border-radius:12px">Chats</div><div id="t2-nav" style="padding:12px;border-radius:12px">Projects</div></div>
+    <div style="flex:1;padding:28px;position:relative"><div style="display:flex;justify-content:space-between;align-items:center"><div id="t2-title" style="font-size:38px;font-weight:800">Projects</div><div id="t2-new" class="badge" style="background:#ECEAE2;color:#1a1a1a;font-size:24px">+ New project</div></div>
+      <div id="t2-proj" style="opacity:0;margin-top:26px">        <div style="margin-top:18px;font-size:22px;color:#aaa;font-weight:700">PROJECT KNOWLEDGE</div><div style="margin-top:10px"><div class="chip t2c"><i style="background:#E5484D">PDF</i>lecture_notes.pdf</div><div class="chip t2c"><i style="background:#2E6BE5">DOC</i>syllabus.docx</div></div>
+        <div style="margin-top:10px;font-size:22px;color:#aaa;font-weight:700">INSTRUCTIONS</div><div class="box" style="min-height:0;padding:14px 18px;margin-top:10px;font-size:24px" id="t2-ins"></div>
+        <div style="margin-top:18px;font-size:22px;color:#aaa;font-weight:700">CHATS IN THIS PROJECT</div>${['Explain photosynthesis', 'Quiz me on cells', 'Exam revision plan'].map(c => `<div class="t2r" style="opacity:0;padding:12px 16px;background:#30302E;border-radius:12px;margin-top:10px;font-size:23px">💬 ${c}</div>`).join('')}</div>
+      <div id="t2-free" class="badge" style="position:absolute;right:24px;bottom:24px;background:#0f3d26;border:3px solid #26c281;color:#5BF0A0;font-size:26px;opacity:0">FREE PLAN · UP TO 5 PROJECTS</div></div></div>`);
+  card('t3', 690, `<div style="display:flex;height:100%"><div id="t3-chat" style="width:100%;padding:24px;position:relative;transition:none">
+      <div class="um" id="t3-um" style="opacity:0">Build me a study planner</div>
+      <div id="t3-ans" class="ans" style="opacity:0;display:flex;gap:12px">${SPARK(36)}<div>Here’s an interactive planner →<div class="badge" style="background:#3a3935;font-size:20px;margin-top:10px">▣ Study planner · Artifact</div></div></div>
+      <div class="box" style="position:absolute;left:24px;right:24px;bottom:24px;min-height:120px" id="t3-box"><div id="t3-txt"></div><div class="plus">+</div><div class="send">${UP}</div></div></div>
+    <div id="t3-art" style="position:absolute;right:0;top:64px;bottom:0;width:560px;background:#1b1b1f;border-left:3px solid #D97757;padding:24px;transform:translateX(600px)">
+      <div style="display:flex;justify-content:space-between;font-size:28px;font-weight:800"><span>📅 Study planner</span><span class="badge" style="background:#D97757;font-size:18px;padding:6px 12px">Artifact</span></div>
+      ${['Mon · Biology ch. 3', 'Tue · Maths problems', 'Wed · History essay', 'Thu · Flashcards', 'Fri · Mock exam'].map((d, i) => `<div style="display:flex;gap:14px;align-items:center;margin-top:20px;font-size:25px"><span class="t3cb" style="width:38px;height:38px;border-radius:10px;border:3px solid #888;display:grid;place-items:center;font-weight:900"></span>${d}</div>`).join('')}
+      <div style="margin-top:30px;font-size:22px;color:#aaa">Progress</div><div style="height:22px;border-radius:11px;background:#333;margin-top:8px;overflow:hidden"><div id="t3-pb" style="height:100%;width:0;background:linear-gradient(90deg,#26c281,#FFD43B)"></div></div></div></div>`);
+  card('t4', 690, `<div class="in" style="position:relative">
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:14px"><div id="t4-pen" style="opacity:0;width:52px;height:52px;border-radius:12px;background:#3a3935;display:grid;place-items:center">${ICO.pen.replace('56', '30').replace('56', '30')}</div><div class="um" id="t4-um" style="margin-left:0">Explain black holes</div></div>
+      <div class="ans" id="t4-a1" style="display:flex;gap:12px">${SPARK(36)}<div style="color:#bbb">A black hole is a region of spacetime where the Schwarzschild metric… event horizon… Hawking radiation…</div></div>
+      <div id="t4-bad" class="badge" style="background:#4a1520;color:#ff8a9a;border:3px solid #ef4b5f;font-size:24px;margin-top:14px;opacity:0">😵 Too complicated</div>
+      <div class="ans" id="t4-a2" style="display:flex;gap:12px;opacity:0">${SPARK(36)}<div>Imagine a drain in space so strong that nothing, not even light, can climb back out. 🕳️<div class="badge" style="background:#0f3d26;color:#5BF0A0;font-size:20px;margin-top:10px">‹ 2 / 2 ›</div></div></div>
+      <div id="t4-new" style="position:absolute;left:30px;bottom:30px;font-size:24px;opacity:0;display:flex;gap:10px;align-items:center"><span class="badge" style="background:#3a3935;text-decoration:line-through;color:#999">+ New chat</span><span style="color:#ef4b5f;font-weight:900;font-size:28px">✗ not needed</span></div></div>`);
+  card('t5', 690, `<div class="in" style="position:relative;height:100%">
+      <div class="box" id="t5-box" style="min-height:170px"><div id="t5-txt"></div><div class="plus">+</div><div class="send">${UP}</div></div>
+      <div id="t5-ans" class="ans" style="opacity:0;display:flex;gap:12px;margin-top:22px">${SPARK(36)}<div><b>Great idea! A few questions first:</b>
+        ${['1. What’s your budget?', '2. Food, history or nightlife?', '3. Which dates are you travelling?'].map(q => `<div class="t5q" style="opacity:0;margin-top:10px">${q}</div>`).join('')}</div></div>
+      <div id="t5-meter" style="opacity:0;position:absolute;left:30px;right:30px;bottom:34px"><div style="display:flex;justify-content:space-between;font-size:24px;font-weight:800"><span>Answer quality</span><span id="t5-pct" style="color:#5BF0A0"></span></div>
+        <div style="height:26px;border-radius:13px;background:#333;margin-top:10px;overflow:hidden"><div id="t5-bar" style="height:100%;width:30%;background:linear-gradient(90deg,#ef4b5f,#FFD43B,#26c281)"></div></div></div></div>`);
+  card('end', 560, `<div class="in" style="text-align:center;padding-top:36px"><div style="font-size:46px;font-weight:900">💬 Which trick first?</div>
+    <div style="display:flex;justify-content:center;gap:18px;margin-top:40px">${[1, 2, 3, 4, 5].map((n, i) => `<div class="en-c" style="width:130px;height:130px;border-radius:28px;background:${['#2E9BFF', '#A35CFF', '#26c281', '#FF7A1A', '#ef4b5f'][i]};display:grid;place-items:center;font-size:70px;font-weight:900;opacity:0">${n}</div>`).join('')}</div>
+    <div style="margin-top:40px;background:#30302E;border-radius:22px;padding:22px;font-size:30px;color:#aaa;text-align:left">Add a comment… <span id="en-t" style="color:#fff"></span></div></div>`, null);
+  CARDS.end.style.background = '#151a40'; CARDS.end.style.borderColor = '#FFD43B';
+  $('#cta').innerHTML = `<div id="fol" style="position:absolute;left:0;right:0;top:330px;text-align:center;opacity:0"><div style="display:inline-block;font-size:110px;font-weight:900;line-height:1;padding:30px 50px;border-radius:40px;background:linear-gradient(90deg,#FFD43B,#FF7A1A);color:#1a0d00;box-shadow:0 0 80px rgba(255,180,40,.6)">FOLLOW<br>FOR MORE</div></div>`;
+}
+// timing for cards
+let CW = [];
+function cardWindows() {
+  const L = Ln, W = Wd;
+  CW = [['hook', .15, L('intro').s - .15], ['five', L('intro').s - .1, L('t1').s - .2], ['t1', L('t1').s - .15, L('t2').s - .2], ['t2', L('t2').s - .15, L('t3').s - .2],
+    ['t3', L('t3').s - .15, L('t4').s - .2], ['t4', L('t4').s - .15, L('t5').s - .2], ['t5', L('t5').s - .15, L('end1').s - .2], ['end', L('end1').s - .1, W('end2', 'follow').s - .2]];
+  CW.forEach(([id, a, b]) => { ev('pop', a); ev('swoosh', b - .05); });
+  // sub-events
+  ev('type', .3, { t1: 1.3 }); ev('buzz', W('hook', 'waste').s);
+  [0, 1, 2, 3, 4].forEach(i => ev('tick', W('intro', 'five').s + i * .12));
+  ev('click', W('t1', 'plus').e - .05); ev('click', W('t1', 'upload').s + .1);
+  ['pdfs', 'photos', 'documents'].forEach(k => ev('pop', W('t1b', k).s)); ev('ding', W('t1b', 'reads').s);
+  ev('click', W('t2', 'create').s + .1); ev('pop', W('t2b', 'notes').s); ev('type', W('t2b', 'instructions').s, { t1: W('t2b', 'once').e }); ev('pop', W('t2b', 'every').s); ev('ding', W('t2b', 'free').s);
+  ev('type', W('t3', 'ask').s, { t1: L('t3').e + .2 }); ev('send', W('t3b', 'build').s); ev('whoosh', W('t3b', 'claude').s); ev('click', W('t3b', 'interactive').s); ev('click', W('t3b', 'tool').s + .1);
+  ev('buzz', W('t4', 'like').s); ev('click', W('t4', 'edit').s); ev('type', W('t4', 'message').s, { t1: W('t4', 'try').s }); ev('send', W('t4', 'again').e); ev('ding', W('t4', 'again').e + .4);
+  ev('type', W('t5', 'end').s, { t1: L('t5').e }); ev('send', L('t5').e + .15); ev('ding', W('t5b', 'answers').s); ev('rise', W('t5b', 'get').s);
+  [0, 1, 2, 3, 4].forEach(i => ev('pop', L('end1').s + .15 + i * .1)); ev('type', W('end1', 'tell').s, { t1: W('end1', 'comments').e });
+  ev('boom', W('end2', 'follow').s); ev('end', DUR - .6);
+}
+function cursorTo(el, card, x, y, s = 1) { const c = $('.cur', card); c.style.transform = `translate(${x}px,${y}px) scale(${s})`; c.style.opacity = el; }
+function rel(el, root) { const a = el.getBoundingClientRect(), b = root.getBoundingClientRect(), k = b.width / root.offsetWidth; return { x: (a.left - b.left + a.width / 2) / k, y: (a.top - b.top + a.height / 2) / k }; }
+function renderCards(t) {
+  const L = Ln, W = Wd;
+  let any = false;
+  for (const [id, a, b] of CW) { const el = CARDS[id]; const u = p01(t, a, a + .3), o = p01(t, b - .2, b + .05); const vis = t >= a && t < b + .05;
+    el.style.opacity = vis ? Math.min(eo(u), 1 - o) : 0; if (vis) any = true;
+    el.style.transform = `translateY(${(1 - eob(u)) * 160 - o * 120}px) scale(${lerp(.6, 1, eob(u)) * lerp(1, .85, o) + .006 * Math.sin(t * 2)}) rotate(${(1 - eo(u)) * -4}deg)`; }
+  const k = (id) => CARDS[id];
+  // hook
+  $('#hk-q').innerHTML = typed('what is the weather tomorrow', t, .35, 1.3) + (t < 2 ? caret(t) : '');
+  { const u = p01(t, W('hook', 'waste').s - .05, W('hook', 'waste').s + .2); const x = $('#hk-x'); x.style.opacity = u > 0 ? 1 : 0; x.style.transform = `scale(${lerp(2.5, 1, eob(u))}) rotate(-8deg)`; }
+  // five
+  { const T0 = W('intro', 'five').s; const n = $('#fv-n'); n.style.transform = `scale(${1 + .25 * pulse(t, T0, .15)})`; $$('.fv-i').forEach((e, i) => { const u = p01(t, T0 + i * .12, T0 + i * .12 + .25); e.style.opacity = u; e.style.transform = `translateY(${(1 - eob(u)) * 60}px) scale(${eob(u)})`; }); }
+  // t1
+  { const c = k('t1'), plus = $('#t1-plus'), menu = $('#t1-menu'); const tp = W('t1', 'plus'), tu = W('t1', 'upload');
+    const mo = p01(t, tp.e - .05, tp.e + .1) * (1 - p01(t, tu.s + .1, tu.s + .25)); menu.style.opacity = mo; menu.style.left = '40px'; menu.style.top = '330px'; menu.style.transform = `translateY(${(1 - eo(mo)) * 20}px)`;
+    $('#t1-mi').style.background = t > tu.s - .2 ? '#45443f' : 'transparent'; plus.style.background = `rgba(255,212,59,${.5 * p01(t, L('t1').s + .3, tp.s) * (1 - p01(t, tu.s, tu.s + .2))})`;
+    const kx = eio(p01(t, L('t1').s, tp.s)), ky = eio(p01(t, tp.e, tu.s - .1));
+    cursorTo(t < L('t1b').e ? 1 : 0, c, lerp(lerp(700, 70, kx), 160, ky), lerp(lerp(560, 520, kx), 380, ky), (Math.abs(t - tp.e) < .08 || Math.abs(t - tu.s - .1) < .08) ? .85 : 1);
+    $$('#t1-files .chip').forEach((ch, i) => { const T = W('t1b', ['pdfs', 'photos', 'documents'][i]).s; const u = p01(t, T - .05, T + .2); ch.style.opacity = u; ch.style.transform = `translateY(${(1 - eob(u)) * -80}px) scale(${eob(u)})`; });
+    const sm = p01(t, W('t1b', 'reads').s - .1, W('t1b', 'reads').s + .2); $('#t1-sum').style.opacity = sm; $('#t1-sum').style.transform = `translateY(${(1 - eo(sm)) * 30}px)`;
+  }
+  // t2
+  { const tc = W('t2', 'create'); $('#t2-nav').style.background = t > L('t2').s + .1 ? '#3a3935' : 'transparent';
+    $('#t2-new').style.transform = `scale(${1 - .08 * pulse(t, tc.s + .1, .06) + .06 * pulse(t, tc.s, .2)})`; $('#t2-new').style.boxShadow = `0 0 ${30 * p01(t, L('t2').s, tc.s)}px #FFD43B`;
+    const pv = p01(t, tc.s + .2, tc.s + .5); $('#t2-proj').style.opacity = pv; $('#t2-title').textContent = pv > .5 ? 'Biology 101' : 'Projects';
+    $$('.t2c').forEach((ch, i) => { const u = p01(t, W('t2b', 'notes').s + i * .2, W('t2b', 'notes').s + i * .2 + .25); ch.style.opacity = u; ch.style.transform = `scale(${eob(u)})`; });
+    $('#t2-ins').innerHTML = typed('Explain things simply. Quiz me at the end.', t, W('t2b', 'instructions').s, W('t2b', 'once').e) || '<span style="color:#888">Add instructions…</span>';
+    $$('.t2r').forEach((r, i) => { const u = p01(t, W('t2b', 'every').s + i * .25, W('t2b', 'every').s + i * .25 + .25); r.style.opacity = u; r.style.transform = `translateX(${(1 - eo(u)) * 60}px)`; });
+    const f = p01(t, W('t2b', 'free').s - .05, W('t2b', 'free').s + .25); $('#t2-free').style.opacity = f; $('#t2-free').style.transform = `scale(${lerp(1.8, 1, eob(f))}) rotate(${-3 * (1 - eo(f))}deg)`;
+    const kc = eio(p01(t, L('t2').s, tc.s)); cursorTo(t < tc.s + .6 ? 1 : 0, k('t2'), lerp(500, 800, kc), lerp(600, 100, kc), Math.abs(t - tc.s - .1) < .08 ? .85 : 1);
+  }
+  // t3
+  { const tb = W('t3b', 'build'), tcl = W('t3b', 'claude'); const sent = t > tb.s;
+    $('#t3-txt').innerHTML = sent ? '<span style="color:#8b897f">Reply to Claude…</span>' : (typed('Build me a study planner', t, W('t3', 'ask').s, L('t3').e + .2) || '<span style="color:#8b897f">How can I help you today?</span>') + caret(t);
+    $('#t3-um').style.opacity = p01(t, tb.s, tb.s + .2); $('#t3-ans').style.opacity = p01(t, tb.s + .5, tb.s + .8);
+    const ap = eio(p01(t, tcl.s, tcl.s + .45)); $('#t3-art').style.transform = `translateX(${(1 - ap) * 600}px)`; $('#t3-chat').style.width = lerp(960, 400, ap) + 'px';
+    const ticks = [W('t3b', 'interactive').s, W('t3b', 'tool').s + .1, W('t3b', 'next').s + .1, W('t3b', 'chat').s];
+    $$('.t3cb').forEach((cb, i) => { const on = ticks[i] && t > ticks[i]; cb.textContent = on ? '✓' : ''; cb.style.background = on ? '#26c281' : 'transparent'; cb.style.borderColor = on ? '#26c281' : '#888'; });
+    $('#t3-pb').style.width = (ticks.filter(x => t > x).length * 20) + '%';
+    const n = ticks.filter(x => t > x).length; const tgt = n < 4 ? n : 3; cursorTo(t > tcl.s + .3 ? 1 : 0, k('t3'), 455, 150 + Math.min(n, 3) * 58 + 30 * eio(p01(t, ticks[Math.min(n, 3) - 1] || 0, (ticks[Math.min(n, 3) - 1] || 0) + .3)), 1);
+  }
+  // t4
+  { const te = W('t4', 'edit'), tm = W('t4', 'message'), ta = W('t4', 'again');
+    $('#t4-bad').style.opacity = p01(t, W('t4', 'like').s - .1, W('t4', 'like').s + .15) * (1 - p01(t, ta.e, ta.e + .2));
+    $('#t4-pen').style.opacity = p01(t, te.s - .2, te.s); $('#t4-pen').style.background = t > te.s ? '#FFD43B' : '#3a3935';
+    const um = $('#t4-um'); const editing = t > te.s + .05 && t < ta.e;
+    um.innerHTML = t < te.s + .05 ? 'Explain black holes' : ('Explain black holes' + typed(' like I’m 10', t, tm.s, W('t4', 'try').s) + (editing ? caret(t) : ''));
+    um.style.outline = editing ? '3px solid #FFD43B' : 'none';
+    const a2 = p01(t, ta.e + .3, ta.e + .6); $('#t4-a1').style.opacity = 1 - p01(t, ta.e, ta.e + .2); $('#t4-a1').style.display = a2 > .5 ? 'none' : 'flex'; $('#t4-a2').style.opacity = a2;
+    $('#t4-new').style.opacity = p01(t, W('t4', 'brand').s - .1, W('t4', 'brand').s + .15);
+    cursorTo(t > W('t4', 'like').e && t < ta.e + .4 ? 1 : 0, k('t4'), lerp(600, 610, eio(p01(t, W('t4', 'like').e, te.s))), lerp(400, 95, eio(p01(t, W('t4', 'like').e, te.s))), Math.abs(t - te.s) < .08 ? .85 : 1);
+  }
+  // t5
+  { const P1 = 'Plan a 3-day trip to Rome. ', P2 = 'Ask me 3 questions before you start.'; const a = W('t5', 'end').s, m = W('t5', 'ask').s, b = L('t5').e; const sent = t > b + .15;
+    const s1 = typed(P1, t, a, m - .05), s2 = typed(P2, t, m, b);
+    $('#t5-txt').innerHTML = sent ? '<span style="color:#8b897f">Reply to Claude…</span>' : (s1 || s2 ? s1 + (s2 ? `<span class="hl">${s2}</span>` : '') : '<span style="color:#8b897f">How can I help you today?</span>') + caret(t);
+    $('#t5-box').style.minHeight = (sent ? 110 : 170) + 'px';
+    $('#t5-ans').style.opacity = p01(t, b + .3, b + .5);
+    $$('.t5q').forEach((q, i) => { const u = p01(t, b + .5 + i * .25, b + .75 + i * .25); q.style.opacity = u; q.style.transform = `translateX(${(1 - eo(u)) * 40}px)`; });
+    const mt = p01(t, W('t5b', 'answers').s - .1, W('t5b', 'answers').s + .2); $('#t5-meter').style.opacity = mt;
+    const q = eo(p01(t, W('t5b', 'get').s, L('t5b').e + .1)); $('#t5-bar').style.width = lerp(30, 95, q) + '%'; $('#t5-pct').textContent = q > .05 ? 'MUCH BETTER ↑' : '';
+  }
+  // end
+  { $$('.en-c').forEach((c, i) => { const u = p01(t, L('end1').s + .15 + i * .1, L('end1').s + .4 + i * .1); c.style.opacity = u; c.style.transform = `translateY(${(1 - eob(u)) * 80 + Math.sin(t * 4 + i) * 6}px) scale(${eob(u)})`; });
+    $('#en-t').innerHTML = typed('Trick #5 for sure 🔥', t, W('end1', 'tell').s, W('end1', 'comments').e) + (t > W('end1', 'tell').s ? caret(t) : ''); }
+  return any;
+}
+
+// ───────── CAPTIONS (white, active word yellow) ─────────
+let CH = [];
+function buildCaptions() { const cap = $('#cap'); let cur = null;
+  WORDS.forEach((w, i) => { const pv = WORDS[i - 1]; const brk = !cur || cur.words.length >= 3 || /[.,:!?]$/.test(pv.w) || w.s - pv.e > .35 || cur.len + w.w.length > 15 || w.li !== pv.li;
+    if (brk) { cur = { words: [], len: 0 }; CH.push(cur); } cur.words.push(w); cur.len += w.w.length + 1; });
+  CH.forEach(c => c.s = c.words[0].s - .04);
+  CH.forEach((c, i) => { const nx = CH[i + 1], last = c.words[c.words.length - 1].e; c.end = nx ? Math.min(nx.s, last + .55) : last + .8;
+    c.el = document.createElement('div'); c.el.className = 'chunk'; c.el.innerHTML = c.words.map(w => `<span class="w">${w.w.toUpperCase().replace(/[.,:]+$/, '')}</span>`).join(''); cap.appendChild(c.el); c.spans = [...c.el.children]; }); }
+function renderCaptions(t) { CH.forEach(c => { const vis = t >= c.s && t < c.end; c.el.style.display = vis ? 'flex' : 'none'; if (!vis) return;
+  c.words.forEach((w, i) => { const sp = c.spans[i], nx = c.words[i + 1]; const ap = p01(t, w.s - .05, w.s + .08), act = t >= w.s - .04 && (nx ? t < nx.s - .04 : t < c.end), a = act ? eo(p01(t, w.s - .04, w.s + .05)) : 0;
+    sp.style.opacity = ap > 0 ? 1 : 0; sp.style.color = act ? '#FFD43B' : '#fff'; sp.style.transform = `translateY(${(1 - eob(ap)) * 24}px) scale(${lerp(.6, 1, eob(ap)) * (1 + .08 * a)})`; }); }); }
+
+// ───────── RENDER ─────────
+function render(t) {
+  const L = Ln;
+  const st = stateMax(t); MAX.update(st);
+  const anyCard = renderCards(t);
+  // camera: punch-ins between cards, gentle push while card is up; zoom keyed to line starts
+  let z = 1.0, cy = 1150;
+  const punch = [[0, 1.55], [.3, 1.0], [L('intro').s, 1.06], [L('t1').s, 1.0], [L('t1b').s, 1.05], [L('t2').s, 1.0], [L('t2b').s, 1.04], [L('t3').s, 1.0], [L('t3b').s, 1.05], [L('t4').s, 1.0],
+    [Wd('t4', 'edit').s, 1.05], [L('t5').s, 1.0], [L('t5b').s, 1.08], [L('end1').s, 1.0], [L('end2').s, 1.25], [Wd('end2', 'follow').s, 1.12]];
+  let prev = punch[0][1]; for (let i = 1; i < punch.length; i++) { const [tk, v] = punch[i]; if (t < tk) break; const u = eio(p01(t, tk, tk + .35)); prev = lerp(prev, v, u); } z = prev;
+  if (t > L('end2').s) cy = lerp(1150, 1080, eio(p01(t, L('end2').s, L('end2').s + .4)));
+  const zz = z * (1 + .01 * Math.sin(t * .9));
+  const w = $('#world'); w.style.transform = `translate(${540 - 540 * zz + noise(t * .5, 1) * 4}px,${cy - 1150 * zz + noise(t * .5, 2) * 4}px) scale(${zz})`;
+  // ambient
+  starSel.forEach((s, i) => s.style.opacity = .4 + .6 * Math.abs(Math.sin(t * (.8 + hash(i) * 1.5) + i)));
+  winSel.forEach((s, i) => { if (i % 7 === 0) s.style.opacity = Math.sin(t * .6 + i) > 0 ? 1 : .25; });
+  steam.forEach((s, i) => { const u = (t * .5 + i * .33) % 1; s.style.opacity = Math.sin(u * Math.PI) * .9; s.setAttribute('transform', `translate(${Math.sin(t * 2 + i) * 6},${-u * 40})`); });
+  clouds.setAttribute('transform', `translate(${Math.sin(t * .1) * 40},0)`); lampG.setAttribute('opacity', .9 + Math.sin(t * 3) * .05);
+  $('#neon').style.opacity = (Math.floor(t * 10) % 37 === 0) ? .5 : 1;
+  // HUD trick counter
+  const n = ['t1', 't2', 't3', 't4', 't5'].filter(id => t >= Ln(id).s).length; $('#cntT').textContent = `TRICK ${n}/5`;
+  $$('#cnt .s').forEach((s, i) => { s.style.background = i < n ? '#FFD43B' : 'rgba(255,255,255,.18)'; s.style.transform = `scaleY(${i === n - 1 ? 1 + .6 * pulse(t, Ln(['t1', 't2', 't3', 't4', 't5'][i]).s, .2) : 1})`; });
+  $('#hud').style.opacity = 1 - p01(t, Wd('end2', 'follow').s - .2, Wd('end2', 'follow').s);
+  // CTA
+  const f = p01(t, Wd('end2', 'follow').s - .05, Wd('end2', 'follow').s + .3); const e = p01(t, DUR - .7, DUR - .1);
+  $('#fol').style.opacity = f; $('#fol').style.transform = `scale(${lerp(2, 1, eob(f)) * (1 + .03 * Math.sin(t * 7) * f)}) rotate(${-3 + Math.sin(t * 3) * f}deg)`;
+  $('#flash').style.opacity = .5 * pulse(t, Wd('end2', 'follow').s, .06);
+  $('#fade').style.opacity = Math.max(1 - p01(t, 0, .25), e);
+  renderCaptions(t);
+}
+window.__init = (data) => { WORDS = data.words; LINES = data.lines; DUR = data.duration; buildRoom(); direct(); buildCards(); cardWindows(); buildCaptions(); return { events: EV, duration: DUR }; };
+window.__render = render;
+window.__thumb = () => { render(Ln('t3b').s + 3.2); $('#cap').style.display = 'none'; $('#fade').style.opacity = 0; $('#pops').style.display = 'none'; $('#hud').style.display = 'none';
+  $('#stage').insertAdjacentHTML('beforeend', `<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,10,30,.9) 0%,rgba(8,10,30,.2) 40%,rgba(8,10,30,0) 60%,rgba(8,10,30,.85) 90%)"></div>
+   <div style="position:absolute;left:0;right:0;top:170px;text-align:center;font:900 150px/0.92 Inter;letter-spacing:-.03em;-webkit-text-stroke:12px #000;paint-order:stroke fill">
+   <div style="color:#FFD43B">5 CLAUDE</div><div style="color:#fff">TRICKS</div><div style="font-size:70px;color:#fff;margin-top:20px">most people <span style="color:#ef4b5f">don’t know</span></div></div>
+   <div style="position:absolute;left:0;right:0;top:1600px;text-align:center"><span style="display:inline-block;font:900 64px Inter;padding:14px 36px;border-radius:999px;background:#FF7A1A;color:#1a0d00">#5 is my favourite</span></div>`); };
+</script></body></html>

@@ -1,0 +1,52 @@
+1
+00:00:00,280 --> 00:00:03,830
+Most people use Claude like a search bar. That's a waste.
+
+2
+00:00:03,985 --> 00:00:07,010
+Here are five tricks that make it way more useful.
+
+3
+00:00:07,240 --> 00:00:10,395
+Trick one: hit the plus button and upload your files.
+
+4
+00:00:10,445 --> 00:00:14,295
+PDFs, photos, documents. Claude reads them for you.
+
+5
+00:00:14,525 --> 00:00:16,555
+Trick two: create a Project.
+
+6
+00:00:16,605 --> 00:00:23,305
+Add your notes and instructions once, and every chat inside it can use them. Even the free plan gets five.
+
+7
+00:00:23,560 --> 00:00:25,765
+Trick three: ask for an artifact.
+
+8
+00:00:25,815 --> 00:00:31,540
+Say, build me a study planner, and Claude makes a real interactive tool right next to the chat.
+
+9
+00:00:31,795 --> 00:00:37,820
+Trick four: don't like the answer? Edit your message and try again, instead of starting a brand new chat.
+
+10
+00:00:38,075 --> 00:00:43,275
+Trick five, my favourite: end your prompt with, ask me three questions before you start.
+
+11
+00:00:43,330 --> 00:00:45,355
+The answers get so much better.
+
+12
+00:00:45,610 --> 00:00:48,935
+Which trick are you trying first? Tell me in the comments.
+
+13
+00:00:49,015 --> 00:00:51,840
+And if you want to learn more, follow for more.
+

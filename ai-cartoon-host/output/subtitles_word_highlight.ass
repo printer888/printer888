@@ -1,0 +1,160 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Cap,Inter Black,80,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,6,4,5,60,60,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.29,0:00:00.52,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}MOST{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}PEOPLE{\alpha&H00&} {\alpha&HFF&}USE{\alpha&H00&}
+Dialogue: 0,0:00:00.52,0:00:00.84,Cap,MAX,0,0,0,,{\pos(540,1545)}MOST {\c&H003BD4FF&\fscx108\fscy108}PEOPLE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}USE{\alpha&H00&}
+Dialogue: 0,0:00:00.84,0:00:01.06,Cap,MAX,0,0,0,,{\pos(540,1545)}MOST PEOPLE {\c&H003BD4FF&\fscx108\fscy108}USE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:01.06,0:00:01.34,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}CLAUDE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}LIKE{\alpha&H00&} {\alpha&HFF&}A{\alpha&H00&}
+Dialogue: 0,0:00:01.34,0:00:01.49,Cap,MAX,0,0,0,,{\pos(540,1545)}CLAUDE {\c&H003BD4FF&\fscx108\fscy108}LIKE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}A{\alpha&H00&}
+Dialogue: 0,0:00:01.49,0:00:01.56,Cap,MAX,0,0,0,,{\pos(540,1545)}CLAUDE LIKE {\c&H003BD4FF&\fscx108\fscy108}A{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:01.56,0:00:01.92,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}SEARCH{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}BAR{\alpha&H00&}
+Dialogue: 0,0:00:01.92,0:00:02.36,Cap,MAX,0,0,0,,{\pos(540,1545)}SEARCH {\c&H003BD4FF&\fscx108\fscy108}BAR{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:02.36,0:00:02.59,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}THAT'S{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}A{\alpha&H00&} {\alpha&HFF&}WASTE{\alpha&H00&}
+Dialogue: 0,0:00:02.59,0:00:02.69,Cap,MAX,0,0,0,,{\pos(540,1545)}THAT'S {\c&H003BD4FF&\fscx108\fscy108}A{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}WASTE{\alpha&H00&}
+Dialogue: 0,0:00:02.69,0:00:04.00,Cap,MAX,0,0,0,,{\pos(540,1545)}THAT'S A {\c&H003BD4FF&\fscx108\fscy108}WASTE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:04.00,0:00:04.17,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}HERE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}ARE{\alpha&H00&} {\alpha&HFF&}FIVE{\alpha&H00&}
+Dialogue: 0,0:00:04.17,0:00:04.34,Cap,MAX,0,0,0,,{\pos(540,1545)}HERE {\c&H003BD4FF&\fscx108\fscy108}ARE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FIVE{\alpha&H00&}
+Dialogue: 0,0:00:04.34,0:00:04.67,Cap,MAX,0,0,0,,{\pos(540,1545)}HERE ARE {\c&H003BD4FF&\fscx108\fscy108}FIVE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:04.67,0:00:05.00,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}TRICKS{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}THAT{\alpha&H00&} {\alpha&HFF&}MAKE{\alpha&H00&}
+Dialogue: 0,0:00:05.00,0:00:05.14,Cap,MAX,0,0,0,,{\pos(540,1545)}TRICKS {\c&H003BD4FF&\fscx108\fscy108}THAT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}MAKE{\alpha&H00&}
+Dialogue: 0,0:00:05.14,0:00:05.32,Cap,MAX,0,0,0,,{\pos(540,1545)}TRICKS THAT {\c&H003BD4FF&\fscx108\fscy108}MAKE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:05.32,0:00:05.42,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}IT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}WAY{\alpha&H00&} {\alpha&HFF&}MORE{\alpha&H00&}
+Dialogue: 0,0:00:05.42,0:00:05.64,Cap,MAX,0,0,0,,{\pos(540,1545)}IT {\c&H003BD4FF&\fscx108\fscy108}WAY{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}MORE{\alpha&H00&}
+Dialogue: 0,0:00:05.64,0:00:05.84,Cap,MAX,0,0,0,,{\pos(540,1545)}IT WAY {\c&H003BD4FF&\fscx108\fscy108}MORE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:05.84,0:00:07.25,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}USEFUL{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:07.25,0:00:07.50,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}TRICK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}ONE{\alpha&H00&}
+Dialogue: 0,0:00:07.50,0:00:07.78,Cap,MAX,0,0,0,,{\pos(540,1545)}TRICK {\c&H003BD4FF&\fscx108\fscy108}ONE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:07.78,0:00:07.90,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}HIT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}THE{\alpha&H00&} {\alpha&HFF&}PLUS{\alpha&H00&}
+Dialogue: 0,0:00:07.90,0:00:08.00,Cap,MAX,0,0,0,,{\pos(540,1545)}HIT {\c&H003BD4FF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}PLUS{\alpha&H00&}
+Dialogue: 0,0:00:08.00,0:00:08.28,Cap,MAX,0,0,0,,{\pos(540,1545)}HIT THE {\c&H003BD4FF&\fscx108\fscy108}PLUS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:08.28,0:00:08.62,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}BUTTON{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}AND{\alpha&H00&}
+Dialogue: 0,0:00:08.62,0:00:08.75,Cap,MAX,0,0,0,,{\pos(540,1545)}BUTTON {\c&H003BD4FF&\fscx108\fscy108}AND{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:08.75,0:00:09.08,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}UPLOAD{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}YOUR{\alpha&H00&}
+Dialogue: 0,0:00:09.08,0:00:09.20,Cap,MAX,0,0,0,,{\pos(540,1545)}UPLOAD {\c&H003BD4FF&\fscx108\fscy108}YOUR{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:09.20,0:00:10.46,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}FILES{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:10.46,0:00:11.08,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}PDFS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:11.08,0:00:11.61,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}PHOTOS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:11.61,0:00:12.38,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}DOCUMENTS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:12.38,0:00:12.71,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}CLAUDE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}READS{\alpha&H00&}
+Dialogue: 0,0:00:12.71,0:00:12.96,Cap,MAX,0,0,0,,{\pos(540,1545)}CLAUDE {\c&H003BD4FF&\fscx108\fscy108}READS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:12.96,0:00:13.13,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}THEM{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FOR{\alpha&H00&} {\alpha&HFF&}YOU{\alpha&H00&}
+Dialogue: 0,0:00:13.13,0:00:13.28,Cap,MAX,0,0,0,,{\pos(540,1545)}THEM {\c&H003BD4FF&\fscx108\fscy108}FOR{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}YOU{\alpha&H00&}
+Dialogue: 0,0:00:13.28,0:00:14.54,Cap,MAX,0,0,0,,{\pos(540,1545)}THEM FOR {\c&H003BD4FF&\fscx108\fscy108}YOU{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:14.54,0:00:14.79,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}TRICK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}TWO{\alpha&H00&}
+Dialogue: 0,0:00:14.79,0:00:15.04,Cap,MAX,0,0,0,,{\pos(540,1545)}TRICK {\c&H003BD4FF&\fscx108\fscy108}TWO{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:15.04,0:00:15.29,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}CREATE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}A{\alpha&H00&}
+Dialogue: 0,0:00:15.29,0:00:15.36,Cap,MAX,0,0,0,,{\pos(540,1545)}CREATE {\c&H003BD4FF&\fscx108\fscy108}A{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:15.36,0:00:16.62,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}PROJECT{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:16.62,0:00:16.82,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}ADD{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}YOUR{\alpha&H00&} {\alpha&HFF&}NOTES{\alpha&H00&}
+Dialogue: 0,0:00:16.82,0:00:16.96,Cap,MAX,0,0,0,,{\pos(540,1545)}ADD {\c&H003BD4FF&\fscx108\fscy108}YOUR{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}NOTES{\alpha&H00&}
+Dialogue: 0,0:00:16.96,0:00:17.29,Cap,MAX,0,0,0,,{\pos(540,1545)}ADD YOUR {\c&H003BD4FF&\fscx108\fscy108}NOTES{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:17.29,0:00:17.39,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}AND{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}INSTRUCTIONS{\alpha&H00&}
+Dialogue: 0,0:00:17.39,0:00:18.12,Cap,MAX,0,0,0,,{\pos(540,1545)}AND {\c&H003BD4FF&\fscx108\fscy108}INSTRUCTIONS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:18.12,0:00:18.49,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}ONCE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:18.49,0:00:18.62,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}AND{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}EVERY{\alpha&H00&} {\alpha&HFF&}CHAT{\alpha&H00&}
+Dialogue: 0,0:00:18.62,0:00:18.91,Cap,MAX,0,0,0,,{\pos(540,1545)}AND {\c&H003BD4FF&\fscx108\fscy108}EVERY{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}CHAT{\alpha&H00&}
+Dialogue: 0,0:00:18.91,0:00:19.29,Cap,MAX,0,0,0,,{\pos(540,1545)}AND EVERY {\c&H003BD4FF&\fscx108\fscy108}CHAT{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:19.29,0:00:19.71,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}INSIDE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}IT{\alpha&H00&} {\alpha&HFF&}CAN{\alpha&H00&}
+Dialogue: 0,0:00:19.71,0:00:19.82,Cap,MAX,0,0,0,,{\pos(540,1545)}INSIDE {\c&H003BD4FF&\fscx108\fscy108}IT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}CAN{\alpha&H00&}
+Dialogue: 0,0:00:19.82,0:00:19.94,Cap,MAX,0,0,0,,{\pos(540,1545)}INSIDE IT {\c&H003BD4FF&\fscx108\fscy108}CAN{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:19.94,0:00:20.16,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}USE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}THEM{\alpha&H00&}
+Dialogue: 0,0:00:20.16,0:00:20.66,Cap,MAX,0,0,0,,{\pos(540,1545)}USE {\c&H003BD4FF&\fscx108\fscy108}THEM{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:20.66,0:00:20.94,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}EVEN{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}THE{\alpha&H00&} {\alpha&HFF&}FREE{\alpha&H00&}
+Dialogue: 0,0:00:20.94,0:00:21.07,Cap,MAX,0,0,0,,{\pos(540,1545)}EVEN {\c&H003BD4FF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FREE{\alpha&H00&}
+Dialogue: 0,0:00:21.07,0:00:21.29,Cap,MAX,0,0,0,,{\pos(540,1545)}EVEN THE {\c&H003BD4FF&\fscx108\fscy108}FREE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:21.29,0:00:21.69,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}PLAN{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}GETS{\alpha&H00&} {\alpha&HFF&}FIVE{\alpha&H00&}
+Dialogue: 0,0:00:21.69,0:00:21.99,Cap,MAX,0,0,0,,{\pos(540,1545)}PLAN {\c&H003BD4FF&\fscx108\fscy108}GETS{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FIVE{\alpha&H00&}
+Dialogue: 0,0:00:21.99,0:00:23.57,Cap,MAX,0,0,0,,{\pos(540,1545)}PLAN GETS {\c&H003BD4FF&\fscx108\fscy108}FIVE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:23.57,0:00:23.82,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}TRICK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}THREE{\alpha&H00&}
+Dialogue: 0,0:00:23.82,0:00:24.10,Cap,MAX,0,0,0,,{\pos(540,1545)}TRICK {\c&H003BD4FF&\fscx108\fscy108}THREE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:24.10,0:00:24.32,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}ASK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FOR{\alpha&H00&} {\alpha&HFF&}AN{\alpha&H00&}
+Dialogue: 0,0:00:24.32,0:00:24.45,Cap,MAX,0,0,0,,{\pos(540,1545)}ASK {\c&H003BD4FF&\fscx108\fscy108}FOR{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}AN{\alpha&H00&}
+Dialogue: 0,0:00:24.45,0:00:24.52,Cap,MAX,0,0,0,,{\pos(540,1545)}ASK FOR {\c&H003BD4FF&\fscx108\fscy108}AN{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:24.52,0:00:25.82,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}ARTIFACT{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:25.82,0:00:26.10,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}SAY{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:26.10,0:00:26.32,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}BUILD{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}ME{\alpha&H00&} {\alpha&HFF&}A{\alpha&H00&}
+Dialogue: 0,0:00:26.32,0:00:26.45,Cap,MAX,0,0,0,,{\pos(540,1545)}BUILD {\c&H003BD4FF&\fscx108\fscy108}ME{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}A{\alpha&H00&}
+Dialogue: 0,0:00:26.45,0:00:26.53,Cap,MAX,0,0,0,,{\pos(540,1545)}BUILD ME {\c&H003BD4FF&\fscx108\fscy108}A{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:26.53,0:00:26.85,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}STUDY{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}PLANNER{\alpha&H00&}
+Dialogue: 0,0:00:26.85,0:00:27.32,Cap,MAX,0,0,0,,{\pos(540,1545)}STUDY {\c&H003BD4FF&\fscx108\fscy108}PLANNER{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:27.32,0:00:27.48,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}AND{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}CLAUDE{\alpha&H00&} {\alpha&HFF&}MAKES{\alpha&H00&}
+Dialogue: 0,0:00:27.48,0:00:27.82,Cap,MAX,0,0,0,,{\pos(540,1545)}AND {\c&H003BD4FF&\fscx108\fscy108}CLAUDE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}MAKES{\alpha&H00&}
+Dialogue: 0,0:00:27.82,0:00:28.07,Cap,MAX,0,0,0,,{\pos(540,1545)}AND CLAUDE {\c&H003BD4FF&\fscx108\fscy108}MAKES{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:28.07,0:00:28.23,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}A{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}REAL{\alpha&H00&}
+Dialogue: 0,0:00:28.23,0:00:28.57,Cap,MAX,0,0,0,,{\pos(540,1545)}A {\c&H003BD4FF&\fscx108\fscy108}REAL{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:28.57,0:00:29.23,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}INTERACTIVE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}TOOL{\alpha&H00&}
+Dialogue: 0,0:00:29.23,0:00:29.60,Cap,MAX,0,0,0,,{\pos(540,1545)}INTERACTIVE {\c&H003BD4FF&\fscx108\fscy108}TOOL{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:29.60,0:00:29.85,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}RIGHT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}NEXT{\alpha&H00&} {\alpha&HFF&}TO{\alpha&H00&}
+Dialogue: 0,0:00:29.85,0:00:30.10,Cap,MAX,0,0,0,,{\pos(540,1545)}RIGHT {\c&H003BD4FF&\fscx108\fscy108}NEXT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}TO{\alpha&H00&}
+Dialogue: 0,0:00:30.10,0:00:30.18,Cap,MAX,0,0,0,,{\pos(540,1545)}RIGHT NEXT {\c&H003BD4FF&\fscx108\fscy108}TO{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:30.18,0:00:30.28,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}CHAT{\alpha&H00&}
+Dialogue: 0,0:00:30.28,0:00:31.80,Cap,MAX,0,0,0,,{\pos(540,1545)}THE {\c&H003BD4FF&\fscx108\fscy108}CHAT{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:31.80,0:00:32.05,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}TRICK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FOUR{\alpha&H00&}
+Dialogue: 0,0:00:32.05,0:00:32.41,Cap,MAX,0,0,0,,{\pos(540,1545)}TRICK {\c&H003BD4FF&\fscx108\fscy108}FOUR{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:32.41,0:00:32.58,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}DON'T{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}LIKE{\alpha&H00&} {\alpha&HFF&}THE{\alpha&H00&}
+Dialogue: 0,0:00:32.58,0:00:32.73,Cap,MAX,0,0,0,,{\pos(540,1545)}DON'T {\c&H003BD4FF&\fscx108\fscy108}LIKE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}THE{\alpha&H00&}
+Dialogue: 0,0:00:32.73,0:00:32.88,Cap,MAX,0,0,0,,{\pos(540,1545)}DON'T LIKE {\c&H003BD4FF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:32.88,0:00:33.45,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}ANSWER?{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:33.45,0:00:33.73,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}EDIT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}YOUR{\alpha&H00&}
+Dialogue: 0,0:00:33.73,0:00:33.86,Cap,MAX,0,0,0,,{\pos(540,1545)}EDIT {\c&H003BD4FF&\fscx108\fscy108}YOUR{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:33.86,0:00:34.28,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}MESSAGE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}AND{\alpha&H00&} {\alpha&HFF&}TRY{\alpha&H00&}
+Dialogue: 0,0:00:34.28,0:00:34.41,Cap,MAX,0,0,0,,{\pos(540,1545)}MESSAGE {\c&H003BD4FF&\fscx108\fscy108}AND{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}TRY{\alpha&H00&}
+Dialogue: 0,0:00:34.41,0:00:34.73,Cap,MAX,0,0,0,,{\pos(540,1545)}MESSAGE AND {\c&H003BD4FF&\fscx108\fscy108}TRY{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:34.73,0:00:35.16,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}AGAIN{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:35.16,0:00:35.48,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}INSTEAD{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}OF{\alpha&H00&}
+Dialogue: 0,0:00:35.48,0:00:35.58,Cap,MAX,0,0,0,,{\pos(540,1545)}INSTEAD {\c&H003BD4FF&\fscx108\fscy108}OF{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:35.58,0:00:35.93,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}STARTING{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}A{\alpha&H00&} {\alpha&HFF&}BRAND{\alpha&H00&}
+Dialogue: 0,0:00:35.93,0:00:36.01,Cap,MAX,0,0,0,,{\pos(540,1545)}STARTING {\c&H003BD4FF&\fscx108\fscy108}A{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}BRAND{\alpha&H00&}
+Dialogue: 0,0:00:36.01,0:00:36.36,Cap,MAX,0,0,0,,{\pos(540,1545)}STARTING A {\c&H003BD4FF&\fscx108\fscy108}BRAND{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:36.36,0:00:36.55,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}NEW{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}CHAT{\alpha&H00&}
+Dialogue: 0,0:00:36.55,0:00:38.09,Cap,MAX,0,0,0,,{\pos(540,1545)}NEW {\c&H003BD4FF&\fscx108\fscy108}CHAT{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:38.09,0:00:38.34,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}TRICK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FIVE{\alpha&H00&}
+Dialogue: 0,0:00:38.34,0:00:38.71,Cap,MAX,0,0,0,,{\pos(540,1545)}TRICK {\c&H003BD4FF&\fscx108\fscy108}FIVE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:38.71,0:00:38.94,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}MY{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FAVOURITE{\alpha&H00&}
+Dialogue: 0,0:00:38.94,0:00:39.54,Cap,MAX,0,0,0,,{\pos(540,1545)}MY {\c&H003BD4FF&\fscx108\fscy108}FAVOURITE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:39.54,0:00:39.69,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}END{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}YOUR{\alpha&H00&} {\alpha&HFF&}PROMPT{\alpha&H00&}
+Dialogue: 0,0:00:39.69,0:00:39.81,Cap,MAX,0,0,0,,{\pos(540,1545)}END {\c&H003BD4FF&\fscx108\fscy108}YOUR{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}PROMPT{\alpha&H00&}
+Dialogue: 0,0:00:39.81,0:00:40.16,Cap,MAX,0,0,0,,{\pos(540,1545)}END YOUR {\c&H003BD4FF&\fscx108\fscy108}PROMPT{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:40.16,0:00:40.46,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}WITH{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:40.46,0:00:40.69,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}ASK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}ME{\alpha&H00&} {\alpha&HFF&}THREE{\alpha&H00&}
+Dialogue: 0,0:00:40.69,0:00:40.86,Cap,MAX,0,0,0,,{\pos(540,1545)}ASK {\c&H003BD4FF&\fscx108\fscy108}ME{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}THREE{\alpha&H00&}
+Dialogue: 0,0:00:40.86,0:00:41.09,Cap,MAX,0,0,0,,{\pos(540,1545)}ASK ME {\c&H003BD4FF&\fscx108\fscy108}THREE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:41.09,0:00:41.61,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}QUESTIONS{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}BEFORE{\alpha&H00&}
+Dialogue: 0,0:00:41.61,0:00:41.94,Cap,MAX,0,0,0,,{\pos(540,1545)}QUESTIONS {\c&H003BD4FF&\fscx108\fscy108}BEFORE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:41.94,0:00:42.06,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}YOU{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}START{\alpha&H00&}
+Dialogue: 0,0:00:42.06,0:00:43.34,Cap,MAX,0,0,0,,{\pos(540,1545)}YOU {\c&H003BD4FF&\fscx108\fscy108}START{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:43.34,0:00:43.49,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}ANSWERS{\alpha&H00&} {\alpha&HFF&}GET{\alpha&H00&}
+Dialogue: 0,0:00:43.49,0:00:43.87,Cap,MAX,0,0,0,,{\pos(540,1545)}THE {\c&H003BD4FF&\fscx108\fscy108}ANSWERS{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}GET{\alpha&H00&}
+Dialogue: 0,0:00:43.87,0:00:44.02,Cap,MAX,0,0,0,,{\pos(540,1545)}THE ANSWERS {\c&H003BD4FF&\fscx108\fscy108}GET{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:44.02,0:00:44.14,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}SO{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}MUCH{\alpha&H00&} {\alpha&HFF&}BETTER{\alpha&H00&}
+Dialogue: 0,0:00:44.14,0:00:44.34,Cap,MAX,0,0,0,,{\pos(540,1545)}SO {\c&H003BD4FF&\fscx108\fscy108}MUCH{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}BETTER{\alpha&H00&}
+Dialogue: 0,0:00:44.34,0:00:45.62,Cap,MAX,0,0,0,,{\pos(540,1545)}SO MUCH {\c&H003BD4FF&\fscx108\fscy108}BETTER{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:45.62,0:00:45.84,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}WHICH{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}TRICK{\alpha&H00&} {\alpha&HFF&}ARE{\alpha&H00&}
+Dialogue: 0,0:00:45.84,0:00:46.05,Cap,MAX,0,0,0,,{\pos(540,1545)}WHICH {\c&H003BD4FF&\fscx108\fscy108}TRICK{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}ARE{\alpha&H00&}
+Dialogue: 0,0:00:46.05,0:00:46.15,Cap,MAX,0,0,0,,{\pos(540,1545)}WHICH TRICK {\c&H003BD4FF&\fscx108\fscy108}ARE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:46.15,0:00:46.27,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}YOU{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}TRYING{\alpha&H00&}
+Dialogue: 0,0:00:46.27,0:00:46.67,Cap,MAX,0,0,0,,{\pos(540,1545)}YOU {\c&H003BD4FF&\fscx108\fscy108}TRYING{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:46.67,0:00:47.17,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}FIRST?{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:47.17,0:00:47.34,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}TELL{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}ME{\alpha&H00&} {\alpha&HFF&}IN{\alpha&H00&}
+Dialogue: 0,0:00:47.34,0:00:47.47,Cap,MAX,0,0,0,,{\pos(540,1545)}TELL {\c&H003BD4FF&\fscx108\fscy108}ME{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}IN{\alpha&H00&}
+Dialogue: 0,0:00:47.47,0:00:47.57,Cap,MAX,0,0,0,,{\pos(540,1545)}TELL ME {\c&H003BD4FF&\fscx108\fscy108}IN{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:47.57,0:00:47.67,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}COMMENTS{\alpha&H00&}
+Dialogue: 0,0:00:47.67,0:00:49.02,Cap,MAX,0,0,0,,{\pos(540,1545)}THE {\c&H003BD4FF&\fscx108\fscy108}COMMENTS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:49.02,0:00:49.12,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}AND{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}IF{\alpha&H00&} {\alpha&HFF&}YOU{\alpha&H00&}
+Dialogue: 0,0:00:49.12,0:00:49.23,Cap,MAX,0,0,0,,{\pos(540,1545)}AND {\c&H003BD4FF&\fscx108\fscy108}IF{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}YOU{\alpha&H00&}
+Dialogue: 0,0:00:49.23,0:00:49.35,Cap,MAX,0,0,0,,{\pos(540,1545)}AND IF {\c&H003BD4FF&\fscx108\fscy108}YOU{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:49.35,0:00:49.52,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}WANT{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}TO{\alpha&H00&} {\alpha&HFF&}LEARN{\alpha&H00&}
+Dialogue: 0,0:00:49.52,0:00:49.62,Cap,MAX,0,0,0,,{\pos(540,1545)}WANT {\c&H003BD4FF&\fscx108\fscy108}TO{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}LEARN{\alpha&H00&}
+Dialogue: 0,0:00:49.62,0:00:49.90,Cap,MAX,0,0,0,,{\pos(540,1545)}WANT TO {\c&H003BD4FF&\fscx108\fscy108}LEARN{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:49.90,0:00:50.27,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}MORE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:50.27,0:00:50.65,Cap,MAX,0,0,0,,{\pos(540,1545)}{\c&H003BD4FF&\fscx108\fscy108}FOLLOW{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}FOR{\alpha&H00&} {\alpha&HFF&}MORE{\alpha&H00&}
+Dialogue: 0,0:00:50.65,0:00:50.80,Cap,MAX,0,0,0,,{\pos(540,1545)}FOLLOW {\c&H003BD4FF&\fscx108\fscy108}FOR{\c&H00FFFFFF&\fscx100\fscy100} {\alpha&HFF&}MORE{\alpha&H00&}
+Dialogue: 0,0:00:50.80,0:00:52.34,Cap,MAX,0,0,0,,{\pos(540,1545)}FOLLOW FOR {\c&H003BD4FF&\fscx108\fscy108}MORE{\c&H00FFFFFF&\fscx100\fscy100}

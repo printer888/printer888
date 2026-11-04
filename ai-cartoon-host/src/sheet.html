@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{margin:0;width:2400px;height:1560px;background:#0E1430;font-family:Inter;color:#fff;overflow:hidden}
+h1{position:absolute;left:60px;top:36px;font-size:64px;font-weight:900;margin:0}h1 span{color:#FFD43B}
+.lab{position:absolute;font-size:30px;font-weight:800;text-align:center;width:420px;color:#c9d3ff}
+.box{position:absolute;right:60px;top:140px;width:520px;font-size:26px;line-height:1.5;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);border-radius:28px;padding:30px}
+.sw{display:inline-block;width:56px;height:56px;border-radius:14px;margin:6px 8px 0 0;border:2px solid rgba(255,255,255,.2)}
+</style></head><body><h1>MAX — host reference sheet <span>· v1</span></h1><svg id="s" width="1850" height="1500" style="position:absolute;left:0;top:0"></svg>
+<div class="box"><b style="font-size:34px">Max</b><br>Recurring host · 20s · friendly, curious, a bit cheeky.<br><br>
+<b>Silhouette keys:</b> tall dark-brown quiff · round black glasses · orange hoodie with white drawstrings · electric-blue headphones round the neck.<br><br>
+<b>Voice:</b> Kokoro <code>am_puck</code> (EN), fixed speed 1.05, no accent processing. Same voice in every episode.<br><br>
+<b>Palette</b><br><span class="sw" style="background:#F4CBA8"></span><span class="sw" style="background:#2A1A12"></span><span class="sw" style="background:#FF7A1A"></span><span class="sw" style="background:#2E9BFF"></span><span class="sw" style="background:#141B3A"></span><span class="sw" style="background:#A35CFF"></span><span class="sw" style="background:#FFD43B"></span></div>
+<script src="rig.js"></script><script>
+const s=document.getElementById('s');
+const cfg=[
+ ['Neutral',{smile:.25},{x:-78,y:-80},{x:78,y:-80}],
+ ['Talking',{smile:.3,mouth:{o:.8,w:.6,r:0},brow:.3},{x:-78,y:-80},{x:70,y:-190}],
+ ['Happy',{smile:1,squint:.4,brow:.3},{x:-78,y:-80},{x:78,y:-80}],
+ ['Surprised',{wide:1,jaw:.6,brow:1},{x:-165,y:-280},{x:165,y:-280}],
+ ['Thinking',{smile:-.1,lookX:.6,lookY:-.7,furrow:.4},{x:-78,y:-80},{x:18,y:-280}],
+ ['Worried',{smile:-.6,brow:.4,furrow:1},{x:-78,y:-80},{x:78,y:-80}],
+ ['Pointing up',{smile:.6,brow:.5,lookY:-.5},{x:-78,y:-80},{x:120,y:-380}],
+ ['Shrug',{smile:-.2,brow:.7},{x:-195,y:-205},{x:195,y:-205}],
+];
+cfg.forEach(([n,e,hl,hr],i)=>{const x=230+(i%4)*420,y=720+Math.floor(i/4)*690;const c=new Char('h'+i,LOOKS.HOST,s);
+ c.update(Object.assign({t:1,x,y,scale:1.05,lookX:0,lookY:0,blink:0,smile:0,handL:hl,handR:hr},e));
+ const d=document.createElement('div');d.className='lab';d.style.left=(x-210)+'px';d.style.top=(y+20)+'px';d.textContent=n;document.body.appendChild(d);});
+</script></body></html>
