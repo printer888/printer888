@@ -1,0 +1,13 @@
+{
+  "_comment": "Copy to economic_calendar.json and maintain it from official sources. Every event needs an ISO-8601 time WITH timezone and an official source_url. The entry below is a FORMAT EXAMPLE ONLY — its date is not a real scheduled event. Official schedules: FOMC https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm · US CPI https://www.bls.gov/schedule/news_release/cpi.htm · US Employment https://www.bls.gov/schedule/news_release/empsit.htm · ECB https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html · BoE https://www.bankofengland.co.uk/monetary-policy/upcoming-mpc-dates",
+  "events": [
+    {
+      "name": "EXAMPLE — FOMC rate decision",
+      "time": "2099-01-01T19:00:00+00:00",
+      "impact": "high",
+      "region": "US",
+      "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "notes": "format example only"
+    }
+  ]
+}
