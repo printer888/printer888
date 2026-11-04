@@ -1,0 +1,19 @@
+[project]
+name = "cryptointel"
+version = "0.1.0"
+description = "Crypto market intelligence, scoring, paper trading and backtesting on Bybit public data (research/simulation only)"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[project.scripts]
+cryptointel = "cryptointel.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["cryptointel*"]
+
+[tool.setuptools.package-data]
+cryptointel = ["web/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
