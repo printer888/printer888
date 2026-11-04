@@ -1,0 +1,590 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>AI Money Duel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000;font-family:Inter,sans-serif;color:#fff}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#07060f}
+#world{position:absolute;inset:0}
+.layer{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:visible;transform-origin:0 0}
+.layer svg{position:absolute;left:0;top:0;overflow:visible}
+#grade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 100%)}
+#warm{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,140,60,.06),rgba(80,40,140,.08));mix-blend-mode:soft-light}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay}
+#fade{position:absolute;inset:0;background:#000;pointer-events:none}
+/* inserts */
+#ins{position:absolute;inset:0;pointer-events:none}
+.scr{position:absolute;left:50px;top:290px;width:980px;height:1010px;border-radius:34px;background:#0b0b0d;border:14px solid #1b1c20;box-shadow:0 40px 120px rgba(0,0,0,.8),0 0 0 2px #2c2e35;overflow:hidden;opacity:0;transform-origin:50% 50%}
+.scr .gl{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.07),rgba(255,255,255,0) 40%);pointer-events:none}
+.td{position:absolute;inset:0;background:#0d1117;font-family:Inter;color:#c9d1d9}
+.td .hd{height:84px;display:flex;align-items:center;gap:20px;padding:0 30px;border-bottom:2px solid #21262d;font-size:28px;font-weight:700}
+.badge{padding:6px 14px;border-radius:10px;font-size:20px;font-weight:800}
+/* claude mock */
+.cl{position:absolute;inset:0;background:#262624;color:#ECEAE2;font-family:Inter}
+.cl .side{position:absolute;left:0;top:0;bottom:0;width:200px;background:#1E1D1B;border-right:2px solid #2d2c2a;padding:26px 18px}
+.cl .brand{display:flex;align-items:center;gap:10px;font-family:"Liberation Serif",Georgia,serif;font-size:32px;margin-bottom:28px}
+.cl .nav{font-size:22px;padding:11px 8px;color:#ECEAE2;display:flex;gap:10px;align-items:center}
+.cl .main{position:absolute;left:200px;right:0;top:0;bottom:0}
+.cl .greet{position:absolute;left:0;right:0;top:230px;text-align:center;font-family:"Liberation Serif",Georgia,serif;font-size:44px;display:flex;justify-content:center;align-items:center;gap:14px}
+.cl .box{position:absolute;left:30px;right:30px;top:340px;min-height:170px;background:#30302E;border:2px solid #45443f;border-radius:24px;padding:20px 22px 76px;font-size:24px;line-height:1.4}
+.cl .plus{position:absolute;left:16px;bottom:14px;width:48px;height:48px;border-radius:14px;border:2px solid #4a4944;display:grid;place-items:center;font-size:32px;font-weight:300}
+.cl .send{position:absolute;right:16px;bottom:14px;width:48px;height:48px;border-radius:14px;background:#D97757;display:grid;place-items:center}
+.chip{display:inline-flex;align-items:center;gap:10px;background:#3a3935;border:2px solid #4d4c47;border-radius:14px;padding:8px 14px 8px 8px;font-size:19px;margin-bottom:12px}
+.chip i{width:38px;height:44px;border-radius:7px;background:#1F9D55;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:900;color:#fff}
+.umsg{position:absolute;right:26px;top:26px;max-width:600px;background:#141413;border-radius:20px;padding:16px 20px;font-size:20px;line-height:1.35}
+.resp{position:absolute;left:30px;right:30px;top:250px;font-size:20.5px;line-height:1.4}
+.resp h5{font-size:22px;color:#fff;margin:10px 0 4px}
+.resp .r{opacity:0}
+.resp b{color:#D97757}
+.caret{display:inline-block;width:3px;height:26px;background:#ECEAE2;vertical-align:-5px;margin-left:2px}
+/* captions */
+#cap{position:absolute;left:60px;width:900px;top:1395px;height:300px}
+#cap .chunk{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:2px 46px}
+#cap .w{display:inline-block;font-weight:900;font-size:80px;line-height:1.08;text-transform:uppercase;letter-spacing:-.02em;color:#fff;
+  -webkit-text-stroke:10px #000;paint-order:stroke fill;text-shadow:0 7px 0 rgba(0,0,0,.6);transform-origin:50% 60%}
+#who{position:absolute;left:0;right:0;top:1340px;display:flex;justify-content:center}
+#who span{font-weight:900;font-size:30px;letter-spacing:.14em;padding:6px 18px;border-radius:10px;color:#000}
+#disc{position:absolute;left:0;right:0;top:182px;text-align:center;font-size:24px;font-weight:800;letter-spacing:.08em;color:rgba(255,255,255,.85);opacity:0}
+#disc span{background:rgba(0,0,0,.55);padding:8px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2)}
+#cta{position:absolute;inset:0;pointer-events:none}
+.big{position:absolute;left:0;right:0;text-align:center;font-weight:900;letter-spacing:-.03em;line-height:.95;text-transform:uppercase;opacity:0}
+</style></head><body>
+<div id="stage">
+  <div id="world">
+    <div class="layer" id="Lsky"><svg id="sky" width="1080" height="1920"></svg></div>
+    <div class="layer" id="Lcity"><svg id="city" width="1080" height="1920"></svg></div>
+    <div class="layer" id="Lroof"><svg id="roof" width="1080" height="1920"></svg></div>
+    <div class="layer" id="Lbg"><svg id="bg" width="1080" height="1920"></svg></div>
+    <div class="layer" id="Lmain"><svg id="main" width="1080" height="1920"></svg></div>
+    <div class="layer" id="Lfg"><svg id="fg" width="1080" height="1920"></svg></div>
+  </div>
+  <div id="warm"></div><div id="grade"></div>
+  <div id="ins"></div>
+  <div id="disc"><span>SIMULATED TRADING · FICTIONAL RESULTS · NOT FINANCIAL ADVICE</span></div>
+  <div id="cta"></div>
+  <div id="who"><span></span></div>
+  <div id="cap"></div>
+  <canvas id="grain" width="540" height="960" style="width:1080px;height:1920px"></canvas>
+  <div id="fade"></div>
+</div>
+<script src="rig.js"></script>
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const pulse = (t, T, w = .25) => Math.exp(-Math.pow((t - T) / w, 2));
+const EV = []; const ev = (type, t, x = {}) => EV.push(Object.assign({ type, t: +(+t).toFixed(3) }, x));
+let TL, WORDS, LINES, DUR;
+const norm = s => s.toLowerCase().replace(/[^a-z0-9']/g, '');
+const Ln = id => LINES.find(l => l.id === id);
+function Wd(id, pre, n = 0) { const li = Ln(id).i; const ws = WORDS.filter(w => w.li === li && norm(w.w).startsWith(pre)); if (!ws[n]) throw Error('word ' + id + ' ' + pre); return ws[n]; }
+function typed(s, t, a, b) { return s.slice(0, Math.round(s.length * p01(t, a, b))); }
+const caret = t => `<span class="caret" style="opacity:${Math.floor(t * 2.4) % 2 ? 0 : 1}"></span>`;
+// keyframe interpolation: keys=[[t,val|obj],...], smooth over `ease` seconds after each key
+function KF(keys, t, ease = .3) {
+  let cur = keys[0][1];
+  for (let i = 1; i < keys.length; i++) { const [tk, v] = keys[i]; if (t < tk) break; const u = sstep(p01(t, tk, tk + ease));
+    if (typeof v === 'number') cur = lerp(cur, v, u); else { const o = {}; for (const k in v) o[k] = lerp(cur[k] ?? 0, v[k], u); cur = Object.assign({}, cur, o); } }
+  return cur;
+}
+const S = (svg, html) => { svg.insertAdjacentHTML('beforeend', html); };
+
+// ───────────── WORLD ─────────────
+const C0 = { x: 540, y: 1060 };
+const LAYERS = [['Lsky', .06, .05], ['Lcity', .16, .12], ['Lroof', .6, .55], ['Lbg', .78, .75], ['Lmain', 1, 1], ['Lfg', 1.2, 1.2]];
+let lightsSel = [], winSel = [], eyeG, carsG, planeG, cloudsG;
+function buildWorld() {
+  const sky = $('#sky'), city = $('#city'), roof = $('#roof');
+  S(sky, `<defs><linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0A0C2A"/><stop offset=".35" stop-color="#2B1C55"/><stop offset=".62" stop-color="#7A2E6E"/><stop offset=".8" stop-color="#E0607A"/><stop offset=".92" stop-color="#FF9E5A"/><stop offset="1" stop-color="#FFC46B"/></linearGradient>
+    <radialGradient id="sunG"><stop offset="0" stop-color="#FFF1C2"/><stop offset=".25" stop-color="#FFD27A" stop-opacity=".9"/><stop offset="1" stop-color="#FF8A4A" stop-opacity="0"/></radialGradient></defs>
+    <rect x="-900" y="-1400" width="2900" height="2500" fill="url(#skyG)"/>
+    <circle cx="160" cy="930" r="320" fill="url(#sunG)" opacity=".75"/><circle cx="160" cy="940" r="46" fill="#FFE7B0"/>
+    ${Array.from({ length: 90 }, (_, i) => `<circle cx="${hash(i) * 2400 - 700}" cy="${hash(i + 50) * 900 - 1300}" r="${.8 + hash(i + 9) * 1.8}" fill="#fff" opacity="${.3 + hash(i + 3) * .6}"/>`).join('')}
+    <g id="clouds">${Array.from({ length: 7 }, (_, i) => `<ellipse cx="${hash(i + 70) * 1800 - 400}" cy="${450 + hash(i + 80) * 380}" rx="${220 + hash(i) * 260}" ry="${16 + hash(i + 4) * 18}" fill="#FFB38A" opacity="${.12 + hash(i + 6) * .15}"/>`).join('')}</g>
+    <g id="plane"><circle r="3" fill="#fff"/><circle r="2.5" cx="-10" fill="#ff4040"/></g>`);
+  cloudsG = $('#clouds'); planeG = $('#plane');
+  // city: far haze band + landmarks
+  let far = '', near = '', wins = '';
+  for (let i = 0; i < 46; i++) { const x = -500 + i * 48, h = 60 + hash(i + 200) * 150; far += `<rect x="${x}" y="${1000 - h}" width="${40 + hash(i) * 20}" height="${h + 40}" fill="#5A3A6E" opacity=".75"/>`; }
+  for (let i = 0; i < 34; i++) { const x = -480 + i * 62, h = 90 + hash(i + 300) * 220, w = 46 + hash(i + 5) * 26; if (x > 500 && x < 620) continue;
+    near += `<rect x="${x}" y="${1000 - h}" width="${w}" height="${h + 40}" fill="#22183A"/>`;
+    for (let k = 0; k < 7; k++) { const wx = x + 6 + hash(i * 7 + k) * (w - 14), wy = 1000 - h + 12 + hash(i * 13 + k) * (h - 20); wins += `<rect class="win" x="${wx.toFixed(1)}" y="${wy.toFixed(1)}" width="5" height="7" fill="#FFD27A"/>`; } }
+  S(city, `<g opacity=".95">${far}</g>
+    <g id="eye" transform="translate(170,790)"><circle r="168" fill="none" stroke="#2B2048" stroke-width="7"/><circle r="150" fill="none" stroke="#2B2048" stroke-width="2"/>
+      ${Array.from({ length: 16 }, (_, i) => { const a = i / 16 * Math.PI * 2; return `<line x1="0" y1="0" x2="${Math.cos(a) * 168}" y2="${Math.sin(a) * 168}" stroke="#2B2048" stroke-width="2"/><circle cx="${Math.cos(a) * 172}" cy="${Math.sin(a) * 172}" r="9" fill="#3A2C5E" stroke="#9EC9FF" stroke-width="1.5"/>`; }).join('')}
+      <circle r="14" fill="#2B2048"/></g>
+    <path d="M 120,1000 L 170,790 L 220,1000" stroke="#2B2048" stroke-width="10" fill="none"/>
+    <g fill="#1C1430">
+      <path d="M 320,1000 L 320,720 L 334,700 L 348,640 L 362,700 L 376,720 L 376,1000 Z"/><rect x="326" y="730" width="44" height="40" fill="#2a1f45"/><circle cx="348" cy="752" r="14" fill="#FFE6A8"/>
+      <path d="M 520,1000 C 500,880 510,770 560,700 C 610,770 620,880 600,1000 Z"/>
+      <path d="M 740,1000 L 802,300 L 864,1000 Z"/><path d="M 802,300 L 806,250 L 798,250 Z"/>
+      <path d="M 930,1000 L 930,780 C 960,760 1010,760 1040,770 L 1040,1000 Z"/>
+    </g>
+    <path d="M 540,712 L 520,1000 M 560,700 L 600,1000 M 580,730 L 548,1000" stroke="#2c2350" stroke-width="2"/>
+    <g opacity=".85">${near}</g>
+    <g>${wins}</g>
+    <circle cx="802" cy="262" r="5" fill="#ff3b3b" id="shardlight"/>
+    <rect x="-600" y="1000" width="2300" height="40" fill="#5E3C78"/>
+    <rect x="-600" y="1012" width="2300" height="3" fill="#FFB38A" opacity=".45"/>
+    <path d="M -600,1004 L 1700,1004" stroke="#1C1430" stroke-width="6"/>
+    <g id="cars"></g>`);
+  winSel = $$('.win', city); eyeG = $('#eye', city); carsG = $('#cars', city);
+  carsG.innerHTML = Array.from({ length: 16 }, (_, i) => `<g class="car"><rect x="-9" y="-3" width="18" height="5" rx="2" fill="#111"/><circle cx="${i % 2 ? 8 : -8}" cy="-1" r="2.6" fill="${i % 2 ? '#fff6d0' : '#ff3030'}"/></g>`).join('');
+  // rooftop: deck, balustrade, planters, string lights
+  let deck = ''; for (let i = 0; i < 26; i++) { const y = 1090 + Math.pow(i / 26, 1.6) * 1100; deck += `<line x1="-600" y1="${y}" x2="1700" y2="${y}" stroke="#2b1d1a" stroke-width="${1 + i / 10}"/>`; }
+  for (let i = -20; i <= 20; i++) deck += `<line x1="${540 + i * 30}" y1="1090" x2="${540 + i * 150}" y2="2200" stroke="#2b1d1a" stroke-width="1.5" opacity=".6"/>`;
+  let bulbs = ''; const strings = [[-300, 560, 1400, 640, 120], [-200, 420, 1300, 500, 90]];
+  strings.forEach(([x0, y0, x1, y1, sag], si) => { let d = `M ${x0},${y0}`; const n = 26;
+    for (let k = 1; k <= n; k++) { const u = k / n, x = lerp(x0, x1, u), y = lerp(y0, y1, u) + Math.sin(u * Math.PI) * sag; d += ` L ${x},${y}`;
+      if (k % 2 == 0) bulbs += `<g class="bulb" transform="translate(${x},${y + 8})"><circle r="26" fill="url(#bulbG)"/><circle r="5" fill="#FFF3C8"/></g>`; }
+    bulbs = `<path d="${d}" stroke="#1a1410" stroke-width="2.5" fill="none"/>` + bulbs; });
+  S(roof, `<defs><radialGradient id="bulbG"><stop offset="0" stop-color="#FFD98A" stop-opacity=".9"/><stop offset="1" stop-color="#FFB050" stop-opacity="0"/></radialGradient>
+     <linearGradient id="deckG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2621"/><stop offset="1" stop-color="#140c0b"/></linearGradient>
+     <linearGradient id="glassG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fc4ff" stop-opacity=".12"/><stop offset="1" stop-color="#9fc4ff" stop-opacity=".04"/></linearGradient></defs>
+    <rect x="-600" y="1085" width="2300" height="1200" fill="url(#deckG)"/>${deck}
+    <rect x="-600" y="1010" width="2300" height="80" fill="url(#glassG)"/>
+    <rect x="-600" y="1006" width="2300" height="7" fill="#C9A86A"/><rect x="-600" y="1086" width="2300" height="5" fill="#2a2018"/>
+    ${Array.from({ length: 14 }, (_, i) => `<rect x="${-560 + i * 170}" y="1010" width="4" height="80" fill="#C9A86A" opacity=".7"/>`).join('')}
+    <g>${[[-40, 1, 1], [1120, 1, -1]].map(([x, s]) => `<g transform="translate(${x},1060)"><rect x="-60" y="0" width="120" height="70" fill="#2a201c"/><path d="M -50,0 C -70,-90 -20,-150 0,-170 C 20,-150 70,-90 50,0 Z" fill="#1d3a2a"/><path d="M -30,0 C -60,-60 -40,-110 -20,-130 M 20,0 C 40,-60 30,-100 30,-120" stroke="#2b5a3e" stroke-width="10" fill="none"/></g>`).join('')}</g>
+    <rect x="-330" y="380" width="9" height="720" fill="#18110e"/><rect x="1395" y="380" width="9" height="720" fill="#18110e"/>
+    ${bulbs}`);
+  lightsSel = $$('.bulb', roof);
+}
+
+// ───────────── CAST ─────────────
+let CH = {}, GUESTS = [], WAITER, LAPIT, LAPRU, BAG;
+function guestLook(i, gender) {
+  const skins = [['#F1C9A8', '#D7A786'], ['#C98E66', '#A8704C'], ['#8D5A3B', '#6E4329'], ['#E8B996', '#C99572'], ['#F5D2B8', '#DDB091']];
+  const hairs = [['#1a1a1a', '#3a3a3a'], ['#6b4a2e', '#8a6440'], ['#c9a46a', '#e0c08a'], ['#3a1f14', '#5a3222'], ['#888', '#aaa']];
+  const sk = skins[i % 5], hr = hairs[(i * 3) % 5];
+  if (gender === 'f') return { gender: 'f', skin: sk[0], skinSh: sk[1], hair: hr[0], hairHi: hr[1], style: i % 2 ? 'long' : 'bun', eye: '#4a3a2a', brow: hr[0],
+    dress: ['#7A1F3D', '#1F3A7A', '#C9A13B', '#222', '#5A2A7A'][i % 5], dressHi: ['#9A3A5A', '#3A5AA0', '#E9C25A', '#444', '#7A4A9A'][i % 5], lip: '#B5404A', earrings: i % 2 == 0, necklace: false };
+  return { gender: 'm', skin: sk[0], skinSh: sk[1], hair: hr[0], hairHi: hr[1], style: i % 2 ? 'short' : 'side', eye: '#4a3a2a', brow: hr[0],
+    suit: ['#2a2a2a', '#3a3f4a', '#4a3a2a', '#1a2a3a', '#5a5a5a'][i % 5], suitHi: ['#444', '#5a606c', '#6a5a4a', '#2a4060', '#777'][i % 5], shirt: '#eee', tie: i % 3 ? '#552' : null, lip: '#a86a5a', stubble: i % 2 ? .15 : 0 };
+}
+function buildCast() {
+  const bg = $('#bg'), main = $('#main');
+  // background guests (two rows) + small tables
+  const G = [ // x, hipY, scale, gender, faceDir(table partner)
+    [70, 1180, .58, 'm', 1], [205, 1180, .58, 'f', -1], [880, 1182, .58, 'f', 1], [1010, 1182, .58, 'm', -1],
+    [400, 1115, .43, 'm', 1], [500, 1115, .43, 'f', -1], [640, 1112, .43, 'f', 1], [735, 1112, .43, 'm', -1]];
+  const gRow = document.createElementNS(NS, 'g'); bg.appendChild(gRow);
+  G.forEach(([x, y, s, g, dir], i) => { const c = new Char('g' + i, guestLook(i + 1, g), gRow); GUESTS.push({ c, x, y, s, dir, i }); });
+  S(bg, `${[[137, 1150, .58], [945, 1152, .58], [450, 1092, .43], [688, 1090, .43]].map(([x, y, s]) => `<g transform="translate(${x},${y}) scale(${s})">
+      <rect x="-120" y="-30" width="240" height="210" rx="8" fill="#ece6dc"/><rect x="-120" y="-40" width="240" height="22" rx="6" fill="#fff"/>
+      <path d="M -60,-40 l 0,-60 m -12,0 l 24,0" stroke="#fff" stroke-width="3" opacity=".7"/><circle cx="0" cy="-60" r="18" fill="url(#bulbG)"/><rect x="-5" y="-62" width="10" height="22" fill="#fff"/>
+      <path d="M 50,-40 l 0,-50 l -14,-30 l 28,0 l -14,30" stroke="#fff" stroke-width="3" fill="rgba(140,20,40,.6)"/></g>`).join('')}`);
+  WAITER = new Char('waiter', { gender: 'm', skin: '#D8A27C', skinSh: '#B9805A', hair: '#222', hairHi: '#444', style: 'short', eye: '#3a2a1a', brow: '#222', suit: '#111', suitHi: '#2a2a2a', shirt: '#f4f4f4', tie: '#000', lip: '#a86a5a', stubble: 0 }, bg);
+  WAITER.r.propR.innerHTML = `<g transform="translate(0,-18)"><ellipse rx="70" ry="10" fill="#C9CED8"/><path d="M -40,-10 l 0,-40 l -10,-20 l 20,0 l -10,20 M 0,-10 l 0,-40 l -10,-20 l 20,0 l -10,20 M 40,-10 l 0,-40 l -10,-20 l 20,0 l -10,20" stroke="#fff" stroke-width="3" fill="rgba(255,220,140,.5)"/></g>`;
+  // main: chairs, characters (body), table, arms, props
+  S(main, `<defs><linearGradient id="clothG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FAF7F2"/><stop offset="1" stop-color="#CFC6B8"/></linearGradient>
+     <linearGradient id="chairG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A1E24"/><stop offset="1" stop-color="#22090c"/></linearGradient>
+     <radialGradient id="candleG"><stop offset="0" stop-color="#FFE2A0" stop-opacity=".9"/><stop offset="1" stop-color="#FF9A40" stop-opacity="0"/></radialGradient>
+     <linearGradient id="lapG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C8CDD6"/><stop offset="1" stop-color="#7B828E"/></linearGradient></defs>
+    ${[250, 450, 740, 940].map(x => `<path d="M ${x - 125},1390 L ${x - 125},1130 C ${x - 125},1080 ${x + 125},1080 ${x + 125},1130 L ${x + 125},1390 Z" fill="url(#chairG)"/><path d="M ${x - 105},1380 L ${x - 105},1140 C ${x - 105},1100 ${x + 105},1100 ${x + 105},1140 L ${x + 105},1380" stroke="#C9A13B" stroke-width="3" fill="none" opacity=".6"/>`).join('')}
+    <g id="bodies"></g>
+    <g id="table">
+      <path d="M 70,1322 L 1010,1322 L 1030,1352 L 50,1352 Z" fill="#FFFFFF"/>
+      <path d="M 50,1352 L 1030,1352 L 1050,1760 L 30,1760 Z" fill="url(#clothG)"/>
+      ${Array.from({ length: 9 }, (_, i) => `<path d="M ${130 + i * 110},1360 C ${150 + i * 110},1500 ${120 + i * 110},1640 ${140 + i * 110},1760" stroke="rgba(120,100,80,.15)" stroke-width="10" fill="none"/>`).join('')}
+      <ellipse cx="540" cy="1352" rx="500" ry="8" fill="rgba(0,0,0,.08)"/>
+      <rect x="30" y="1756" width="1020" height="10" fill="rgba(0,0,0,.35)"/>
+    </g>
+    <g id="arms"></g>
+    <g id="props">
+      <g id="candle" transform="translate(600,1300)"><circle r="70" fill="url(#candleG)" id="cglow"/><rect x="-10" y="-20" width="20" height="40" rx="4" fill="#F4EBDD"/><path id="flame" d="M 0,-44 C 8,-32 7,-24 0,-20 C -7,-24 -8,-32 0,-44 Z" fill="#FFD27A"/><rect x="-26" y="18" width="52" height="8" rx="4" fill="#C9A13B"/></g>
+      <g transform="translate(380,1300)" id="wineIT"><path d="M -14,-50 C -16,-26 -10,-16 0,-14 C 10,-16 16,-26 14,-50 Z" fill="rgba(255,255,255,.25)" stroke="#fff" stroke-width="2"/><path d="M -13,-36 C -12,-24 -8,-17 0,-16 C 8,-17 12,-24 13,-36 Z" fill="#7A1426"/><path d="M 0,-14 L 0,14 M -12,16 L 12,16" stroke="#fff" stroke-width="3"/></g>
+      <g transform="translate(850,1306)"><rect x="-12" y="-40" width="24" height="48" rx="3" fill="rgba(200,230,255,.25)" stroke="#dfefff" stroke-width="2"/><rect x="-10" y="-22" width="20" height="28" fill="rgba(160,210,255,.35)"/></g>
+      <g transform="translate(140,1316)"><rect x="-24" y="-14" width="48" height="16" rx="4" fill="#111"/><rect x="-20" y="-12" width="40" height="11" rx="2" fill="#222"/></g>
+      <g id="bag"><path d="M -38,-36 C -38,-70 38,-70 38,-36" stroke="#E9C25A" stroke-width="3" fill="none"/><rect x="-44" y="-38" width="88" height="56" rx="12" fill="#F2E6D6"/><rect x="-44" y="-38" width="88" height="20" rx="10" fill="#E6D6C0"/><circle cx="0" cy="-18" r="5" fill="#E9C25A"/></g>
+      <g id="lapIT"></g><g id="lapRU"></g>
+    </g>`);
+  const bodies = $('#bodies'), arms = $('#arms');
+  CH.GF = new Char('GF', LOOKS.GF, bodies, { armsParent: arms });
+  CH.IT = new Char('IT', LOOKS.IT, bodies, { armsParent: arms });
+  CH.RU = new Char('RU', LOOKS.RU, bodies, { armsParent: arms });
+  CH.GF.r.propR.innerHTML = `<g id="gfGlass" transform="translate(0,-26)"><path d="M -14,-50 C -16,-26 -10,-16 0,-14 C 10,-16 16,-26 14,-50 Z" fill="rgba(255,255,255,.25)" stroke="#fff" stroke-width="2"/><path d="M -13,-36 C -12,-24 -8,-17 0,-16 C 8,-17 12,-24 13,-36 Z" fill="#E8C76A"/><path d="M 0,-14 L 0,14" stroke="#fff" stroke-width="3"/></g>`;
+  CH.GF.r.propL.innerHTML = `<g id="gfBag" transform="translate(0,58)" style="display:none"><path d="M -38,-36 C -38,-70 38,-70 38,-36" stroke="#E9C25A" stroke-width="3" fill="none"/><rect x="-44" y="-38" width="88" height="56" rx="12" fill="#F2E6D6"/><rect x="-44" y="-38" width="88" height="20" rx="10" fill="#E6D6C0"/><circle cx="0" cy="-18" r="5" fill="#E9C25A"/></g>`;
+  const lap = (sel, x) => { $(sel).innerHTML = `<g transform="translate(${x},1330)"><rect x="-95" y="-6" width="190" height="12" rx="4" fill="#9aa1ad"/><g class="lid"><rect x="-90" y="-120" width="180" height="120" rx="8" fill="url(#lapG)"/><circle cx="0" cy="-62" r="10" fill="rgba(255,255,255,.35)"/><rect x="-90" y="-120" width="180" height="120" rx="8" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/></g><ellipse class="spill" cx="0" cy="-130" rx="140" ry="40" fill="rgba(140,190,255,.0)"/></g>`; return $(sel + ' .lid'); };
+  LAPIT = lap('#lapIT', 250); LAPRU = lap('#lapRU', 740); BAG = $('#bag');
+  S($('#fg'), Array.from({ length: 6 }, (_, i) => `<circle class="fgb" cx="${hash(i + 400) * 1200 - 60}" cy="${1700 + hash(i + 410) * 300}" r="${40 + hash(i + 420) * 50}" fill="${i % 2 ? '#FFB050' : '#9EC9FF'}" opacity=".18"/>`).join(''));
+}
+
+// ───────────── DIRECTION ─────────────
+let SHOTS = [], DIR = {};
+function H(id) { return Ln(id); }
+function build() {
+  const L = id => Ln(id), w = (id, p, n) => Wd(id, p, n);
+  const it1 = L('it1'), ru1 = L('ru1'), it2 = L('it2'), it3 = L('it3'), ru2 = L('ru2'), ru3 = L('ru3'), it4 = L('it4'), ru4 = L('ru4'), it5 = L('it5'), gf1 = L('gf1'), ru5 = L('ru5'), gf2 = L('gf2'), it6 = L('it6'), ru6 = L('ru6');
+  const T = {};
+  T.walkA = 0.9; T.walkB = 2.25; T.sit = 2.3; T.sitE = 2.75;
+  T.itLap = [it2.e + .05, it2.e + .75];
+  T.ruLap = [it3.e + .35, it3.e + 1.0];
+  T.claude1 = [ru2.s + 1.25, ru2.e + .1];
+  T.claude2 = [ru3.e + .2, it4.s - .15];
+  T.dash = [w('ru4', 'before').s - .05, ru4.e + .55];
+  T.res = [ru4.e + .55, it5.s - .75];
+  T.stand = [ru5.e + .95, ru5.e + 1.35]; T.walk = [ru5.e + 1.35, gf2.s - .15]; T.sit2 = [gf2.s - .15, gf2.s + .3];
+  T.cta1 = ru6.e + .1; T.cta2 = ru6.e + 1.0; T.end = DUR - .7;
+  DIR.T = T;
+  const CU = (k, z = 2.55, dz = .12) => { const x = { IT: 250, RU: 740, GF: 450, GF2: 940 }[k]; return { a: [x, 1172, z], b: [x, 1168, z + dz] }; };
+  const sh = (t0, kind, cam, extra = {}) => SHOTS.push(Object.assign({ t0, kind, cam }, extra));
+  sh(0, 'world', { a: [540, 160, 1.0], b: [540, 1060, 1.04], ease: [0, 2.3] }, { name: 'establish' });
+  sh(it1.s - .2, 'world', CU('IT'), { name: 'IT cu' });
+  sh(ru1.s - .25, 'world', CU('RU'), { name: 'RU cu' });
+  sh(ru1.e + .3, 'world', CU('GF', 2.4), { name: 'GF watching' });
+  sh(w('it2', 'making').s - .05, 'world', { a: [330, 1150, 1.75], b: [320, 1150, 1.85] }, { name: 'IT medium + laptop' });
+  sh(it3.s - .2, 'insert', null, { scr: 'chart', name: 'IT chart' });
+  sh(w('it3', "that's").s - .12, 'world', CU('IT', 2.4), { name: 'IT smug' });
+  sh(it3.e + .2, 'world', { a: [560, 1110, 1.12], b: [600, 1110, 1.2] }, { name: 'wide RU laptop' });
+  sh(T.claude1[0], 'insert', null, { scr: 'claude', name: 'claude home' });
+  sh(T.claude1[1], 'world', CU('GF', 2.45), { name: 'GF curious' });
+  sh(ru3.s + .25, 'world', CU('RU', 2.6), { name: 'RU signature' });
+  sh(T.claude2[0], 'insert', null, { scr: 'claude', name: 'claude prompt' });
+  sh(T.claude2[1], 'world', CU('IT', 2.5), { name: 'IT puzzled' });
+  sh(it4.e + .2, 'world', CU('RU', 2.5), { name: 'RU explains' });
+  sh(T.dash[0], 'insert', null, { scr: 'dash', name: 'sim dashboard' });
+  sh(T.res[0], 'insert', null, { scr: 'res', name: 'results' });
+  sh(T.res[1], 'world', { a: [540, 1080, 1.0], b: [540, 1080, 1.08] }, { name: 'wide reaction' });
+  sh(it5.s + .75, 'world', { a: [250, 1172, 2.3], b: [250, 1160, 2.9], ease: [it5.s + .75, it5.s + 1.6] }, { name: 'IT shock' });
+  sh(gf1.s - .15, 'world', CU('GF', 2.55), { name: 'GF asks' });
+  sh(ru5.s - .2, 'world', CU('RU', 2.5), { name: 'RU answers' });
+  sh(ru5.e + .2, 'world', CU('GF', 2.6), { name: 'GF disappointed' });
+  sh(T.stand[0] - .1, 'world', { a: [600, 1090, 1.05], b: [680, 1090, 1.1] }, { name: 'wide walk' });
+  sh(gf2.s + .45, 'world', { a: [840, 1160, 1.75], b: [840, 1158, 1.85] }, { name: 'two-shot' });
+  sh(it6.s - .2, 'world', { a: [250, 1172, 2.2], b: [250, 1172, 2.45], ease: [it6.s - .2, it6.s + .4] }, { name: 'IT seriously' });
+  sh(it6.e + .4, 'world', { a: [740, 1172, 2.45], b: [740, 1176, 2.85] }, { name: 'RU to camera' });
+  SHOTS.forEach((s, i) => { s.t1 = SHOTS[i + 1] ? SHOTS[i + 1].t0 : DUR + 1; if (!s.cam) return; if (!s.cam.ease) s.cam.ease = [s.t0, s.t1]; });
+  // SFX cues
+  SHOTS.slice(1).forEach(s => ev(s.kind === 'insert' ? 'whoosh' : 'cut', s.t0));
+  for (let k = 0; k < 9; k++) ev('step', lerp(T.walkA, T.walkB, k / 9) + .05);
+  ev('chair', T.sit); ev('laptop', T.itLap[0] + .2); ev('laptop', T.ruLap[0] + .2);
+  ev('type', it3.s - .1, { t1: w('it3', "that's").s - .2 }); ev('type', T.claude1[0] + .7, { t1: T.claude1[0] + 1.3 });
+  ev('type', T.claude2[0] + .1, { t1: T.claude2[0] + 1.9 }); ev('send', T.claude2[0] + 2.0); ev('stream', T.claude2[0] + 2.2, { t1: T.claude2[1] - .1 });
+  ev('notif', T.claude2[1] - .4); ev('click', T.dash[1] - .55); ev('notif', T.dash[1] - .45);
+  ev('riser', T.res[0] - .1, { t1: T.res[0] + 1.0 }); ev('tick', T.res[0] + .5, { t1: T.res[0] + 1.6 }); ev('reveal', T.res[0] + 1.75); ev('crowd', T.res[1] + .05);
+  ev('stinger', it5.s + .75); ev('chair', T.stand[0]); for (let k = 0; k < 6; k++) ev('heel', lerp(T.walk[0], T.walk[1], k / 6) + .05); ev('chair', T.sit2[0] + .2);
+  ev('crowd', T.walk[0] + .3); ev('boing', it6.s); ev('cta', T.cta1); ev('cta', T.cta2); ev('end', T.end);
+}
+
+// look helpers: lookX toward world x
+const lookAt = (fromX, toX) => clamp((toX - fromX) / 260, -1, 1);
+function blinkAt(t, seed) { // pseudo-random natural blinks
+  let b = 0; for (let k = 0; k < 40; k++) { const bt = k * 2.9 + hash(seed * 31 + k) * 2.2; const d = t - bt; if (d > 0 && d < .17) b = Math.max(b, Math.sin(d / .17 * Math.PI)); }
+  return b;
+}
+function speaking(who, t) { // returns current line for who if inside it (with margin)
+  return LINES.find(l => l.who === who && t >= l.s - .1 && t <= l.e + .15);
+}
+function talkFX(who, t) { // mouth + nods + brow beats
+  const l = speaking(who, t); if (!l) return { mouth: null, nod: 0, beat: 0 };
+  const mouth = visemeAt(l.phones, t);
+  let beat = 0; for (const wd of WORDS) if (wd.li === l.i) beat = Math.max(beat, pulse(t, wd.s + .05, .09) * (wd.e - wd.s > .25 ? 1 : .4));
+  return { mouth, nod: beat * 4, beat };
+}
+const POSE = {
+  table: [{ x: -78, y: -90 }, { x: 78, y: -90 }],
+  type: [{ x: -48, y: -96 }, { x: 48, y: -96 }],
+  gestR: [{ x: -78, y: -90 }, { x: 70, y: -190 }],
+  gestL: [{ x: -70, y: -190 }, { x: 78, y: -90 }],
+  open: [{ x: -60, y: -170 }, { x: 60, y: -170 }],
+  shrug: [{ x: -195, y: -205 }, { x: 195, y: -205 }],
+  head: [{ x: -165, y: -280 }, { x: 165, y: -280 }],
+  glass: [{ x: -70, y: -90 }, { x: 30, y: -300 }],
+  glassDown: [{ x: -70, y: -90 }, { x: 90, y: -95 }],
+  chin: [{ x: -70, y: -90 }, { x: 18, y: -280 }],
+  bag: [{ x: -95, y: -40 }, { x: 80, y: -40 }],
+  walk: [{ x: -95, y: -10 }, { x: 95, y: -10 }],
+  hip: [{ x: -110, y: -60 }, { x: 95, y: -20 }],
+};
+function poseAt(keys, t, ease = .3) { // keys [[t,'pose'],...]
+  let A = POSE[keys[0][1]].map(o => ({ ...o }));
+  for (let i = 1; i < keys.length; i++) { const [tk, pn] = keys[i]; if (t < tk) break; const u = eio(p01(t, tk, tk + ease)), B = POSE[pn];
+    A = A.map((o, j) => ({ x: lerp(o.x, B[j].x, u), y: lerp(o.y, B[j].y, u) })); }
+  return A;
+}
+
+function stateIT(t) {
+  const T = DIR.T, it = n => Ln(n), ru = Ln('ru1');
+  const tk = talkFX('IT', t);
+  const st = { t, x: 250, y: 1390, scale: 1, stand: 0, lookX: lookAt(250, 740), lookY: 0, blink: blinkAt(t, 1), smile: .35, brow: 0, furrow: 0, wide: 0, jaw: 0, lean: 0, tilt: 0, mouth: tk.mouth };
+  // look at whoever speaks / own laptop
+  const gfTalk = speaking('GF', t);
+  if (gfTalk) st.lookX = lookAt(250, 450);
+  if (t < it('it1').s - .5) { st.lookX = lookAt(250, 450) * .8 + (t > T.walkA + .5 ? .9 : 0); st.smile = .55; }
+  const ex = KF([[0, { smile: .55, brow: 0, furrow: 0, wide: 0, jaw: 0, lean: 0 }],
+    [it('it1').s - .3, { smile: .45, brow: .5, furrow: 0, lean: -3 }], [it('it1').e, { smile: .6, brow: .2 }],
+    [Ln('ru1').s + .4, { smile: .25, brow: .6, lean: 0 }], [it('it2').s, { smile: .55, brow: .3, lean: -4 }],
+    [T.itLap[0], { lean: 0, smile: .4 }], [it('it3').s, { smile: .35, brow: 0, furrow: .4 }], [Wd('it3', "that's").s, { smile: .65, brow: .6, furrow: 0, lean: -2 }],
+    [it('it3').e + .3, { smile: .4, brow: 0, lean: 0 }],
+    [Ln('ru3').s, { smile: .15, brow: .3 }], [it('it4').s - .2, { smile: 0, brow: .4, furrow: .6, lean: 7 }], [it('it4').e + .3, { furrow: .3, lean: 2 }],
+    [DIR.T.res[1] - .1, { smile: -.2, wide: .7, jaw: .3, brow: .8, furrow: 0, lean: 0 }], [it('it5').s + .7, { wide: 1, jaw: .45, brow: 1, smile: -.3 }], [it('it5').e + .2, { wide: .6, jaw: .15, brow: .7 }],
+    [Ln('gf1').s, { wide: .3, jaw: 0, brow: .3, smile: -.3 }], [Ln('ru5').e + .3, { smile: -.1, brow: 0, wide: 0 }], [DIR.T.stand[0], { wide: .5, brow: .7, smile: -.2 }],
+    [Ln('gf2').s + .4, { wide: 1, jaw: .35, brow: 1, smile: -.4 }], [it('it6').s, { wide: 1, jaw: .2, brow: 1.1, smile: -.5, tilt: -6 }], [it('it6').e + .4, { wide: .6, jaw: .1, brow: .6, tilt: -3 }]], t, .25);
+  Object.assign(st, ex);
+  if (t > T.itLap[1] && t < Ln('ru2').s) { st.lookX = -.1; st.lookY = .6; st.glow = .5; } // looks at own screen
+  if (t > T.itLap[1]) st.glow = Math.max(st.glow || 0, .35);
+  if (t > Ln('it4').s - .3 && t < Ln('it4').e + .3) { st.lookX = 1; st.lookY = .5; }
+  if (t > DIR.T.res[1] - .1 && t < Ln('gf1').s) st.lookX = .9;
+  if (t > DIR.T.stand[0] && t < DIR.T.sit2[1]) st.lookX = lookAt(250, CH.GF._x || 450);
+  if (t > Ln('gf2').s) st.lookX = 1;
+  if (t > Ln('it6').s - .1 && t < Ln('it6').e + .6) { st.lookX = .2; }
+  const pose = poseAt([[0, 'table'], [Ln('it1').s, 'gestR'], [Ln('it1').e + .2, 'table'], [Ln('it2').s + .2, 'gestL'], [T.itLap[0], 'open'], [T.itLap[1] - .1, 'type'],
+    [Wd('it3', "that's").s, 'gestR'], [Ln('it3').e + .2, 'table'], [Ln('it4').s, 'gestR'], [Ln('it4').e + .3, 'table'], [Ln('it5').s - .2, 'head'], [Ln('it5').e + .3, 'table'],
+    [Ln('it6').s - .25, 'shrug'], [Ln('it6').e + .7, 'table']], t, .28);
+  st.handL = pose[0]; st.handR = pose[1];
+  if (Math.hypot(st.handR.y + 190, 0) < 30 || speaking('IT', t)) { st.handR = { x: st.handR.x + Math.sin(t * 7) * 6 * (tk.beat + .3), y: st.handR.y + tk.beat * -12 }; }
+  if (t > T.itLap[1] - .1 && t < Wd('it3', "that's").s) { st.handL.y += Math.sin(t * 31) * 3; st.handR.y += Math.cos(t * 27) * 3; }
+  st.nod = tk.nod; st.brow += tk.beat * .25;
+  st.tilt = (st.tilt || 0) + noise(t * .7, 3) * 2;
+  return st;
+}
+function stateRU(t) {
+  const T = DIR.T; const tk = talkFX('RU', t);
+  const st = { t, x: 740, y: 1390, scale: 1, stand: 0, lookX: lookAt(740, 250), lookY: 0, blink: blinkAt(t, 2), smile: .3, brow: 0, mouth: tk.mouth };
+  // entrance walk
+  if (t < T.sitE) {
+    const u = p01(t, T.walkA, T.walkB); st.x = lerp(1260, 740, eio(u)); st.stand = 1 - eio(p01(t, T.sit, T.sitE));
+    st.walk = t > T.walkA && t < T.walkB; st.walkPh = (t - T.walkA) * 8.5; st.lookX = t < T.walkB ? -.6 : -.8; st.smile = .35;
+    if (t < T.walkA) st.x = 1260;
+  }
+  const ex = KF([[0, { smile: .35, brow: 0, furrow: 0, wide: 0, lean: 0, tilt: 0 }], [Ln('it1').s, { smile: .3, brow: .2 }], [Ln('ru1').s, { smile: .45, brow: .1 }],
+    [Ln('ru2').s, { smile: .3, brow: .2 }], [Ln('ru3').s, { smile: .4, brow: .3, tilt: 2 }], [Ln('it4').s, { smile: .45, brow: 0, tilt: 0 }],
+    [T.res[1], { smile: .55, brow: .2 }], [Ln('gf1').e, { smile: .5 }], [T.stand[0], { smile: .45, brow: .4 }], [Ln('gf2').s, { smile: .55, brow: .5 }], [Ln('it6').s, { smile: .7, brow: .1 }],
+    [Ln('ru6').s, { smile: .55, brow: .2 }], [Ln('ru6').e, { smile: .75, brow: .4, tilt: 3 }]], t, .3);
+  Object.assign(st, ex);
+  if (speaking('GF', t)) st.lookX = lookAt(740, CH.GF._x || 450);
+  if (t > T.ruLap[1] && t < Ln('ru3').s) { st.lookY = .55; st.lookX = -.05; }
+  if (t > T.ruLap[1]) st.glow = .45;
+  if (t > T.claude2[0] - .1 && t < Ln('it4').s) { st.lookY = .6; st.lookX = 0; }
+  if (t > Wd('ru4', 'before').s - .2 && t < T.res[1]) { st.lookY = .55; st.lookX = 0; }
+  if (t > Ln('it6').e + .3) { st.lookX = 0; st.lookY = 0; st.glow = .25; } // to camera
+  const pose = poseAt([[0, 'walk'], [T.sit, 'table'], [T.ruLap[0], 'open'], [T.ruLap[1] - .1, 'type'], [Ln('ru3').s, 'gestR'], [Ln('ru3').e + .1, 'type'], [Ln('it4').s + .2, 'table'],
+    [Ln('ru4').s, 'gestL'], [Wd('ru4', 'before').s, 'type'], [T.res[1] - .3, 'table'], [Ln('ru5').s, 'gestR'], [Ln('ru5').e + .2, 'table'], [Ln('ru6').s + .2, 'gestR'], [Ln('ru6').e + .3, 'table']], t, .3);
+  st.handL = pose[0]; st.handR = pose[1];
+  if (t < T.sit && st.walk) { st.handL = { x: -95 + Math.sin(st.walkPh) * 18, y: -10 }; st.handR = { x: 95 - Math.sin(st.walkPh) * 18, y: -10 }; }
+  const typing = (t > T.ruLap[1] && t < Ln('ru3').s) || (t > T.claude2[0] && t < T.claude2[0] + 2) || (t > Wd('ru4', 'before').s && t < T.dash[1] - .3);
+  if (typing) { st.handL.y += Math.sin(t * 29) * 3; st.handR.y += Math.cos(t * 33) * 3; }
+  if (speaking('RU', t)) st.handR = { x: st.handR.x + Math.sin(t * 5) * 5 * (tk.beat + .2), y: st.handR.y - tk.beat * 10 };
+  st.nod = tk.nod * .8; st.brow += tk.beat * .2; st.tilt += noise(t * .6, 7) * 1.5;
+  return st;
+}
+function stateGF(t) {
+  const T = DIR.T; const tk = talkFX('GF', t);
+  const st = { t, x: 450, y: 1395, scale: .97, stand: 0, lookX: lookAt(450, 250), lookY: 0, blink: blinkAt(t, 3), smile: .45, brow: 0, mouth: tk.mouth };
+  // who to look at: the speaker
+  const sp = LINES.find(l => t >= l.s - .2 && t <= l.e + .4);
+  if (sp && sp.who === 'RU') st.lookX = lookAt(450, 740); if (sp && sp.who === 'IT') st.lookX = lookAt(450, 250);
+  if (t < Ln('it1').s - .3) st.lookX = t < T.walkA + .4 ? -.7 : .8;
+  if (t > T.claude1[1] - .2 && t < Ln('ru3').s + .4) { st.lookX = 1; st.lookY = .45; }
+  if (t > T.claude2[1] && t < T.res[1]) { st.lookX = .9; st.lookY = .35; }
+  if (t > T.res[1] && t < Ln('ru5').e + .2) st.lookX = 1;
+  const ex = KF([[0, { smile: .6, brow: 0, furrow: 0, wide: 0, lean: 0, tilt: 0 }], [Ln('it1').s, { smile: .35, brow: .2 }], [Ln('ru1').s, { smile: .3, brow: .3 }],
+    [Ln('ru1').e + .3, { smile: .2, brow: .4, tilt: -3 }], [Ln('it3').s, { smile: .25, brow: .1, tilt: 0 }], [T.claude1[1], { smile: .35, brow: .7, tilt: 4, lean: 3 }],
+    [Ln('ru3').e, { smile: .3, brow: .3, tilt: 0, lean: 0 }], [T.res[1], { smile: .4, wide: .8, brow: .8 }], [Ln('gf1').s, { smile: .55, wide: .3, brow: .6, tilt: 4 }],
+    [Ln('ru5').s, { smile: .6, brow: .4 }], [Ln('ru5').e + .25, { smile: -.45, brow: -.2, furrow: .7, wide: 0, tilt: -5 }],
+    [T.stand[0], { smile: .1, furrow: .2, tilt: 0 }], [T.walk[0], { smile: .45, furrow: 0, brow: .2 }], [Ln('gf2').s, { smile: .55, brow: .5, tilt: 6 }], [Ln('gf2').e + .3, { smile: .7, brow: .2, tilt: 4 }]], t, .3);
+  Object.assign(st, ex);
+  // eye roll when disappointed
+  const roll = p01(t, Ln('ru5').e + .35, Ln('ru5').e + .75) * (1 - p01(t, T.stand[0] - .2, T.stand[0]));
+  if (roll > 0) { st.lookX = lerp(-.8, .3, roll); st.lookY = -.9 * Math.sin(roll * Math.PI); }
+  // stand + walk to RU's side + sit
+  const sU = eio(p01(t, T.stand[0], T.stand[1])), sD = eio(p01(t, T.sit2[0], T.sit2[1]));
+  st.stand = sU * (1 - sD);
+  const wU = p01(t, T.walk[0], T.walk[1]); st.x = lerp(450, 940, eio(wU)); st.walk = wU > 0 && wU < 1; st.walkPh = (t - T.walk[0]) * 9;
+  if (st.walk) { st.lookX = .7; st.lookY = 0; }
+  if (t > T.sit2[0]) { st.lookX = Ln('it6').s - .2 < t && t < Ln('it6').e + .5 ? -1 : lookAt(940, 740); }
+  if (t > Ln('ru6').s) st.lookX = lookAt(940, 740);
+  CH.GF._x = st.x;
+  const pose = poseAt([[0, 'glass'], [1.4, 'glassDown'], [Ln('it1').s, 'table'], [T.claude1[1], 'chin'], [Ln('ru3').e, 'table'], [Ln('gf1').s, 'gestR'], [Ln('gf1').e + .2, 'table'],
+    [T.stand[0] - .25, 'bag'], [T.walk[0], 'walk'], [T.sit2[0], 'table'], [Ln('gf2').s + .5, 'gestL'], [Ln('gf2').e + .2, 'table']], t, .3);
+  st.handL = pose[0]; st.handR = pose[1];
+  if (t < 1.5) { const sip = Math.sin(p01(t, .2, 1.4) * Math.PI); st.handR = { x: lerp(90, 26, sip), y: lerp(-95, -300, sip) }; st.lookY = sip * .2; st.blink = Math.max(st.blink, sip > .8 ? .6 : 0); }
+  if (st.walk) { st.handL = { x: -95 + Math.sin(st.walkPh) * 14, y: -20 }; }
+  st.hasBag = t > T.stand[0] - .05 && t < T.sit2[0] + .25;
+  st.nod = tk.nod; st.brow += tk.beat * .25; st.tilt += noise(t * .8, 11) * 2;
+  return st;
+}
+
+// ───────────── INSERTS ─────────────
+const SPARK = s => { let o = `<svg width="${s}" height="${s}" viewBox="-50 -50 100 100">`; for (let i = 0; i < 11; i++) { const a = i / 11 * Math.PI * 2 + .2 * hash(i); const L = [38, 30, 44, 33, 40, 29, 42, 35, 31, 43, 36][i]; o += `<line x1="${Math.cos(a) * 6}" y1="${Math.sin(a) * 6}" x2="${Math.cos(a) * L}" y2="${Math.sin(a) * L}" stroke="#D97757" stroke-width="9" stroke-linecap="round"/>`; } return o + '</svg>'; };
+const UP = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>`;
+function candles(n, seed, w, h, drift) { let x = 0, p = h * .55, o = ''; const cw = w / n;
+  for (let i = 0; i < n; i++) { const d = (hash(seed + i) - .5 + drift) * h * .09, q = p + d, hi = Math.min(p, q) - hash(seed + i + 99) * h * .05, lo = Math.max(p, q) + hash(seed + i + 77) * h * .05; const up = q < p;
+    o += `<line x1="${x + cw / 2}" y1="${hi}" x2="${x + cw / 2}" y2="${lo}" stroke="${up ? '#26c281' : '#ef4b5f'}" stroke-width="2"/><rect x="${x + cw * .18}" y="${Math.min(p, q)}" width="${cw * .64}" height="${Math.max(2, Math.abs(q - p))}" fill="${up ? '#26c281' : '#ef4b5f'}"/>`; p = q; x += cw; }
+  return o; }
+const PROMPT = 'Analyse this simulated market data. Identify possible scenarios, risks and potential entry and exit conditions. Do not assume profits are guaranteed.';
+const RESP = [
+  ['p', 'Here’s a structured read of the <b>simulated</b> data. None of this is a guarantee.'],
+  ['h', 'Possible scenarios'], ['p', '<b>1 · Breakout</b> — holds above 1.2650 support, retests 1.2780'], ['p', '<b>2 · Range</b> — chops between 1.2650 and 1.2720'], ['p', '<b>3 · Breakdown</b> — close below 1.2600 flips momentum'],
+  ['h', 'Key risks'], ['p', '• Volatility around the 14:00 rate announcement'], ['p', '• Thin liquidity late in the session'],
+  ['h', 'Conditions to consider'], ['p', 'Entry: only after a confirmed close above 1.2665'], ['p', 'Exit: stop below 1.2600 · target near 1.2780'], ['p', 'Risk ≤ 1% of the account per trade. <b>The decision is yours.</b>']];
+function buildInserts() {
+  const ins = $('#ins');
+  ins.innerHTML = `
+  <div class="scr" id="s-chart"><div class="td"><div class="hd"><span style="color:#58a6ff">◆ TradeDesk</span><span class="badge" style="background:#21262d">GBP/USD</span><span id="cpx" style="margin-left:auto;color:#26c281">1.2671 ▲</span></div>
+    <svg width="952" height="700" style="position:absolute;left:0;top:96px"><g id="cc">${candles(60, 5, 1400, 640, 0)}</g>
+      <path id="gut" d="M 120,520 C 260,470 380,420 520,330 C 620,260 700,190 820,120" stroke="#FFD43B" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="1200" stroke-dashoffset="1200"/>
+      <g id="gutT" opacity="0"><text x="540" y="140" fill="#FFD43B" font-size="44" font-weight="900" font-style="italic" font-family="Inter">“It’s going UP.”</text><text x="560" y="186" fill="#FFD43B" font-size="26" font-weight="700" font-family="Inter" opacity=".8">— my instinct</text></g></svg>
+    <div style="position:absolute;left:24px;bottom:22px;font-size:22px;color:#8b949e">No data model · manual chart reading</div></div><div class="gl"></div></div>
+  <div class="scr" id="s-claude"><div class="cl"><div class="side"><div class="brand">${SPARK(38)}Claude</div><div class="nav"><span style="width:28px;height:28px;border-radius:50%;background:#D97757;display:grid;place-items:center;font-weight:700">+</span>New chat</div><div class="nav">Chats</div><div class="nav">Projects</div></div>
+    <div class="main"><div class="greet" id="c-greet">${SPARK(52)}<span>Good evening, Dmitri</span></div>
+      <div class="umsg" id="c-umsg" style="opacity:0"><div class="chip"><i>CSV</i>simulated_market_data.csv</div><div>${PROMPT}</div></div>
+      <div class="resp" id="c-resp" style="opacity:0">${SPARK(34)}${RESP.map(([k, s]) => k === 'h' ? `<h5 class="r">${s}</h5>` : `<div class="r">${s}</div>`).join('')}</div>
+      <div class="box" id="c-box"><div id="c-chip" style="display:none"><div class="chip"><i>CSV</i>simulated_market_data.csv · 1.2 MB</div></div><div id="c-txt"></div><div class="plus">+</div><div class="send">${UP}</div></div></div></div><div class="gl"></div></div>
+  <div class="scr" id="s-dash"><div class="td"><div class="hd"><span style="color:#58a6ff">◆ Paper Trading</span><span class="badge" style="background:#3b2a00;color:#FFD43B">SIMULATED ACCOUNT</span><span style="margin-left:auto">£10,000.00</span></div>
+    <svg width="952" height="520" style="position:absolute;left:0;top:96px"><g>${candles(40, 31, 952, 480, -.03)}</g>
+      <line x1="0" y1="300" x2="952" y2="300" stroke="#26c281" stroke-dasharray="10 8" stroke-width="3"/><text x="10" y="290" fill="#26c281" font-size="22" font-weight="800">ENTRY 1.2665</text>
+      <line x1="0" y1="400" x2="952" y2="400" stroke="#ef4b5f" stroke-dasharray="10 8" stroke-width="3"/><text x="10" y="390" fill="#ef4b5f" font-size="22" font-weight="800">STOP 1.2600</text>
+      <line x1="0" y1="110" x2="952" y2="110" stroke="#58a6ff" stroke-dasharray="10 8" stroke-width="3"/><text x="10" y="100" fill="#58a6ff" font-size="22" font-weight="800">TARGET 1.2780</text></svg>
+    <div style="position:absolute;left:24px;right:24px;bottom:24px;height:240px;background:#161b22;border:2px solid #30363d;border-radius:20px;padding:22px;font-size:24px">
+      <div style="display:flex;justify-content:space-between"><b style="font-size:28px">Order ticket</b><span style="color:#8b949e">Claude analysed · <b style="color:#fff">Dmitri decides</b></span></div>
+      <div style="display:flex;gap:16px;margin-top:18px"><span class="badge" style="background:#0f3d26;color:#26c281;font-size:24px">BUY GBP/USD</span><span class="badge" style="background:#21262d;font-size:24px">Stop 1.2600</span><span class="badge" style="background:#21262d;font-size:24px">Target 1.2780</span></div>
+      <div id="d-btn" style="margin-top:22px;height:74px;border-radius:16px;background:#2E9BFF;display:grid;place-items:center;font-weight:900;font-size:30px">Place simulated order</div></div>
+    <svg id="d-cur" width="60" height="60" viewBox="0 0 24 24" style="position:absolute;left:0;top:0"><path d="M4 2.5v17.2l4.6-4.3 2.9 6.6 3.1-1.4-2.9-6.4 6.3-.4Z" fill="#fff" stroke="#000" stroke-width="1.4"/></svg></div><div class="gl"></div></div>
+  <div id="s-res" style="position:absolute;inset:0;opacity:0">
+    <div style="position:absolute;left:0;right:0;top:232px;text-align:center;font-size:46px;font-weight:900;letter-spacing:.06em">CHALLENGE <span style="color:#FFD43B">COMPLETE</span></div>
+    ${[['IT', 'MARCO', 'Instinct only', '#FF8A1F', 450, 300], ['RU', 'DMITRI', 'Claude-assisted analysis', '#2E9BFF', 2850, 760]].map(([k, n, sub, c, v, y]) => `
+    <div class="res" id="r-${k}" style="position:absolute;left:60px;right:60px;top:${y}px;height:420px;border-radius:36px;background:rgba(10,14,22,.92);border:3px solid ${c};box-shadow:0 0 60px ${c}55;padding:30px 36px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:16px"><span style="font-size:40px;font-weight:900;color:${c}">${n}</span><span style="font-size:24px;color:#9aa4b2;font-weight:700">${sub}</span></div>
+      <div class="num" style="font-size:${k === 'RU' ? 150 : 120}px;font-weight:900;letter-spacing:-.03em;color:#2EE88A;margin-top:10px;text-shadow:0 0 40px rgba(46,232,138,.6)">+£0</div>
+      <svg width="900" height="160" style="position:absolute;left:36px;bottom:24px"><path class="ln" d="${(() => { let d = 'M 0,140'; let yy = 140; for (let i = 1; i <= 30; i++) { yy -= (hash(i + (k === 'RU' ? 7 : 3)) - (k === 'RU' ? .25 : .42)) * 14; yy = clamp(yy, 10, 150); d += ` L ${i * 30},${yy.toFixed(1)}`; } return d; })()}" stroke="#2EE88A" stroke-width="5" fill="none" stroke-dasharray="1400" stroke-dashoffset="1400"/></svg>
+    </div>`).join('')}
+  </div>`;
+  $('#cta').innerHTML = `<div id="ctabg" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,3,15,.85) 0%,rgba(5,3,15,.6) 45%,rgba(5,3,15,0) 60%);opacity:0"></div><div class="big" id="cta1" style="top:300px;font-size:120px"><span style="color:#fff">AI +</span><br><span style="background:linear-gradient(90deg,#B26BFF,#6B8BFF);-webkit-background-clip:text;color:transparent">SMARTER</span><br><span style="color:#fff">DECISIONS</span></div>
+    <div class="big" id="cta2" style="top:720px"><span style="display:inline-block;font-size:76px;padding:22px 48px;border-radius:999px;background:linear-gradient(90deg,#8A3FFC,#B26BFF);box-shadow:0 0 70px rgba(178,107,255,.7)">FOLLOW FOR MORE</span></div>`;
+}
+function renderInserts(t, shot) {
+  const T = DIR.T; const on = id => shot && shot.kind === 'insert' && shot.scr === id;
+  for (const id of ['chart', 'claude', 'dash']) { const el = $('#s-' + id); const vis = on(id);
+    if (!vis) { el.style.opacity = 0; continue; }
+    const u = p01(t, shot.t0 - .05, shot.t0 + .25), d = t - shot.t0;
+    el.style.opacity = eo(u); el.style.transform = `perspective(1600px) rotateX(${lerp(14, 4, eo(u)) - d * .4}deg) rotateY(${-3 + d * .6}deg) scale(${lerp(.86, 1, eo(u)) + d * .012})`; }
+  // chart: candles scroll, gut line drawn
+  if (on('chart')) { const d = t - shot.t0; $('#cc').setAttribute('transform', `translate(${-d * 60},0)`); $('#gut').setAttribute('stroke-dashoffset', 1200 * (1 - eo(p01(d, .35, 1.3)))); $('#gutT').setAttribute('opacity', p01(d, 1.1, 1.4)); $('#cpx').textContent = (1.2671 + Math.sin(t * 3) * .0004).toFixed(4) + ' ▲'; }
+  if (on('claude')) {
+    const first = shot.t0 < T.claude2[0] - .5;
+    const chip = $('#c-chip'), txt = $('#c-txt'), um = $('#c-umsg'), rs = $('#c-resp'), box = $('#c-box'), gr = $('#c-greet');
+    if (first) { // home + attach csv
+      um.style.opacity = 0; rs.style.opacity = 0; gr.style.opacity = 1; box.style.top = '340px';
+      chip.style.display = t > shot.t0 + .6 ? 'block' : 'none'; chip.style.transform = `scale(${eob(p01(t, shot.t0 + .6, shot.t0 + .9))})`;
+      txt.innerHTML = typed('Analyse this simulated', t, shot.t0 + .9, shot.t0 + 1.6) + caret(t);
+    } else {
+      const ts = T.claude2[0] + 2.0; const sent = t > ts;
+      gr.style.opacity = 1 - p01(t, ts, ts + .2); chip.style.display = sent ? 'none' : 'block';
+      txt.innerHTML = sent ? '<span style="color:#8b897f">Reply to Claude…</span>' : typed(PROMPT, t, shot.t0 - .2, ts - .1).replace(/^/, '') + caret(t);
+      box.style.top = lerp(340, 770, eio(p01(t, ts, ts + .3))) + 'px'; box.style.minHeight = lerp(170, 110, eio(p01(t, ts, ts + .3))) + 'px';
+      const uv = p01(t, ts, ts + .3); um.style.opacity = uv; um.style.transform = `translateY(${(1 - eo(uv)) * 240}px)`;
+      rs.style.opacity = p01(t, ts + .15, ts + .35); const rows = $$('.r', rs); const a = ts + .25, b = shot.t1 - .2;
+      rows.forEach((r, i) => { const v = p01(t, lerp(a, b, i / rows.length), lerp(a, b, i / rows.length) + .12); r.style.opacity = v; });
+    }
+  }
+  if (on('dash')) { const d = t - shot.t0, b = shot.t1 - .55; const cur = $('#d-cur'), btn = $('#d-btn');
+    const k = eio(p01(t, shot.t0 + .2, b - .1)); cur.style.transform = `translate(${lerp(820, 470, k)}px,${lerp(420, 900, k)}px) scale(${t > b - .05 && t < b + .1 ? .85 : 1})`;
+    btn.style.background = t > b ? '#26c281' : '#2E9BFF'; btn.textContent = t > b ? '✓ Simulated order placed' : 'Place simulated order'; btn.style.transform = `scale(${1 - .05 * pulse(t, b, .06)})`; }
+  const res = $('#s-res'); if (on('res')) { const d = t - shot.t0; res.style.opacity = 1;
+    for (const [k, v, a] of [['IT', 450, .45], ['RU', 2850, 1.0]]) { const el = $('#r-' + k); const u = p01(d, k === 'IT' ? .05 : .35, k === 'IT' ? .4 : .7);
+      el.style.opacity = u; el.style.transform = `translateX(${(1 - eo(u)) * (k === 'IT' ? -600 : 600)}px) scale(${k === 'RU' ? 1 + .05 * pulse(d, 1.75, .25) + p01(d, 1.75, 3) * .03 : 1})`;
+      const c = p01(d, a, k === 'IT' ? 1.1 : 1.75); $('.num', el).textContent = '+£' + Math.round(v * eo(c)).toLocaleString('en-GB');
+      $('.ln', el).setAttribute('stroke-dashoffset', 1400 * (1 - eo(c)));
+      if (k === 'RU') { el.style.boxShadow = `0 0 ${60 + 80 * pulse(d, 1.8, .4)}px rgba(46,232,138,${.3 + .5 * pulse(d, 1.8, .4)})`; el.style.borderColor = d > 1.75 ? '#2EE88A' : '#2E9BFF'; } }
+  } else res.style.opacity = 0;
+}
+
+// ───────────── CAPTIONS ─────────────
+const COL = { RU: '#2E9BFF', IT: '#FF8A1F', GF: '#FF5FA2' };
+const NUMW = new Set(['two', 'thousand', 'eight', 'hundred', 'and', 'fifty', '2850']);
+let CHUNKS = [];
+function buildCaptions() {
+  const cap = $('#cap'); let cur = null;
+  WORDS.forEach((w, i) => { const pv = WORDS[i - 1];
+    const brk = !cur || cur.words.length >= 3 || /[.,:!?…]$/.test(pv.w) || w.s - pv.e > .35 || cur.len + w.w.length > 16 || w.li !== pv.li;
+    if (brk) { cur = { words: [], len: 0, who: w.who, li: w.li }; CHUNKS.push(cur); } cur.words.push(w); cur.len += w.w.length + 1; });
+  CHUNKS.forEach(c => c.s = c.words[0].s - .04);
+  CHUNKS.forEach((c, i) => { const nx = CHUNKS[i + 1], last = c.words[c.words.length - 1].e; c.end = nx ? Math.min(nx.s, last + .6) : last + .8;
+    c.el = document.createElement('div'); c.el.className = 'chunk';
+    c.el.innerHTML = c.words.map(w => `<span class="w">${w.w.replace(/[.,:…]+$/, '').replace(/\?!$/, '?!')}</span>`).join(''); cap.appendChild(c.el); c.spans = [...c.el.children]; });
+}
+function renderCaptions(t) {
+  let curWho = null;
+  CHUNKS.forEach(c => { const vis = t >= c.s && t < c.end; c.el.style.display = vis ? 'flex' : 'none'; if (!vis) return; curWho = c.who;
+    const isNum = Ln('it5').i === c.li, isCTA = Ln('ru6').i === c.li;
+    c.words.forEach((w, i) => { const sp = c.spans[i], nx = c.words[i + 1];
+      const ap = p01(t, w.s - .05, w.s + .09), act = t >= w.s - .04 && (nx ? t < nx.s - .04 : t < c.end), a = act ? eo(p01(t, w.s - .04, w.s + .06)) : 0;
+      let col = COL[w.who]; if (isNum && NUMW.has(norm(w.w))) col = '#2EE88A'; if (isCTA) col = '#B26BFF';
+      sp.style.opacity = ap > 0 ? 1 : 0; sp.style.color = act ? col : (isNum && NUMW.has(norm(w.w)) ? '#bfffd9' : '#fff');
+      sp.style.transform = `translateY(${(1 - eob(ap)) * 26}px) scale(${lerp(.55, 1, eob(ap)) * (1 + .07 * a)})`;
+      sp.style.textShadow = act ? `0 7px 0 rgba(0,0,0,.6),0 0 ${30 * a}px ${col}` : '0 7px 0 rgba(0,0,0,.6)'; }); });
+  const who = $('#who span'); who.style.display = curWho ? '' : 'none';
+  if (curWho) { who.textContent = { RU: 'DMITRI', IT: 'MARCO', GF: 'GIULIA' }[curWho]; who.style.background = COL[curWho]; }
+}
+
+// ───────────── RENDER ─────────────
+let grainFrames = [];
+function buildGrain() { const c = $('#grain'), x = c.getContext('2d'); for (let k = 0; k < 6; k++) { const im = x.createImageData(540, 960); let s = k * 9973 + 1;
+  for (let i = 0; i < im.data.length; i += 4) { s = (s * 16807) % 2147483647; const v = s % 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; } grainFrames.push(im); } }
+function camAt(t, shot) { const c = shot.cam, u = eio(p01(t, c.ease[0], c.ease[1])); return { x: lerp(c.a[0], c.b[0], u), y: lerp(c.a[1], c.b[1], u), z: lerp(c.a[2], c.b[2], u) }; }
+let lastShot = null;
+function render(t) {
+  const shot = SHOTS.filter(s => t >= s.t0).pop();
+  let worldShot = shot; if (shot.kind === 'insert') { const i = SHOTS.indexOf(shot); worldShot = SHOTS.slice(0, i).reverse().find(s => s.kind === 'world'); }
+  const cam = camAt(t, worldShot);
+  cam.x += noise(t * .5, 1) * 3 * cam.z; cam.y += noise(t * .45, 2) * 3 * cam.z; // handheld drift
+  const insert = shot.kind === 'insert';
+  for (const [id, p, pz] of LAYERS) { const el = document.getElementById(id); const Z = 1 + (cam.z - 1) * pz, cx = C0.x + (cam.x - C0.x) * p, cy = C0.y + (cam.y - C0.y) * p;
+    el.style.transform = `translate(${540 - cx * Z}px,${960 - cy * Z}px) scale(${Z})`;
+    let blur = 0; if (cam.z > 1.3) blur = { Lsky: 6, Lcity: 5, Lroof: 4, Lbg: 3.2, Lmain: 0, Lfg: 6 }[id] * clamp((cam.z - 1.2) / 1.2); if (id === 'Lfg') blur = Math.max(blur, 8);
+    el.style.filter = blur > .3 ? `blur(${blur.toFixed(1)}px)` : 'none'; }
+  $('#world').style.filter = insert ? 'blur(14px) brightness(.45)' : 'none';
+  // ambient world animation
+  eyeG.setAttribute('transform', `translate(170,790) rotate(${t * 2})`);
+  planeG.setAttribute('transform', `translate(${-200 + t * 22},${-420 + t * 2})`); planeG.style.opacity = Math.floor(t * 1.5) % 2 ? 1 : .4;
+  cloudsG.setAttribute('transform', `translate(${t * 6},0)`);
+  lightsSel.forEach((b, i) => b.style.opacity = .82 + .18 * Math.sin(t * 2 + i * 1.7));
+  winSel.forEach((w, i) => { if (i % 9 === 0) w.style.opacity = (Math.sin(t * .7 + i) > .2) ? 1 : .2; });
+  $$('.car', carsG).forEach((c, i) => { const dir = i % 2 ? 1 : -1, sp = 40 + hash(i) * 30, x = ((hash(i + 5) * 2400 + t * sp * dir) % 2400 + 2400) % 2400 - 600; c.setAttribute('transform', `translate(${x},1002)`); });
+  $('#flame').setAttribute('transform', `scale(${1 + Math.sin(t * 17) * .06},${1 + Math.sin(t * 13) * .1})`); $('#cglow').setAttribute('opacity', .8 + Math.sin(t * 11) * .15);
+  // characters
+  const T = DIR.T;
+  const sI = stateIT(t), sR = stateRU(t), sG = stateGF(t);
+  CH.IT.update(sI); CH.RU.update(sR); CH.GF.update(sG);
+  $('#gfGlass').style.display = t < Ln('it1').s ? '' : 'none'; $('#wineIT').style.opacity = 1;
+  $('#gfBag').style.display = sG.hasBag ? '' : 'none'; BAG.style.display = sG.hasBag ? 'none' : '';
+  BAG.setAttribute('transform', t > T.sit2[0] + .2 ? 'translate(1010,1318)' : 'translate(548,1318)');
+  // laptops
+  const lid = (el, a) => { const u = eio(p01(t, a[0], a[1])); el.setAttribute('transform', `translate(0,0) scale(1,${Math.max(.04, u)})`);  };
+  lid(LAPIT, T.itLap); lid(LAPRU, T.ruLap);
+  // background guests: chat, drink, react
+  const react = Math.max(p01(t, T.res[1], T.res[1] + .3) * (1 - p01(t, Ln('gf1').e, Ln('gf1').e + .5)), p01(t, T.walk[0], T.walk[0] + .3) * (1 - p01(t, Ln('it6').e + .5, Ln('it6').e + 1)));
+  GUESTS.forEach(({ c, x, y, s, dir, i }) => { const talking = Math.sin(t * .9 + i * 2.1) > 0; const m = talking ? { o: clamp(.3 + .4 * Math.sin(t * 13 + i), 0, 1) * (Math.sin(t * 3.3 + i) > -.3 ? 1 : 0), w: .5, r: 0 } : null;
+    const lx = lerp(dir * .9, lookAt(x, 500), react);
+    c.update({ t, x, y, scale: s, lookX: lx, lookY: 0, blink: blinkAt(t, 10 + i), smile: talking ? .5 : .3, brow: react * .8, wide: react * .6, mouth: react > .5 ? { o: .45, w: .2, r: .8 } : m,
+      handL: { x: -78, y: -90 }, handR: (i % 3 === 0 && Math.sin(t * .5 + i) > .6) ? { x: 30, y: -300 } : { x: 78 + Math.sin(t * 2 + i) * 6, y: -90 }, nod: talking ? Math.sin(t * 6 + i) * 2 : 0, tilt: dir * 3 + react * dir * -4 }); });
+  // waiter crossing
+  const passes = [[0, 7, -150, 1250], [17, 25, 1250, -150], [33.5, 41, -150, 1250], [47, 55, 1250, -150]]; let wv = null;
+  for (const [a, b, x0, x1] of passes) if (t >= a && t <= b) wv = { x: lerp(x0, x1, (t - a) / (b - a)), dir: Math.sign(x1 - x0), ph: (t - a) * 8 };
+  if (wv) WAITER.update({ t, x: wv.x, y: 1215, scale: .66, stand: 1, walk: true, walkPh: wv.ph, lookX: wv.dir * .6, blink: blinkAt(t, 40), smile: .3, handL: { x: -95 + Math.sin(wv.ph) * 14, y: -10 }, handR: { x: 70, y: -230 } });
+  else WAITER.update({ hidden: true });
+  renderInserts(t, shot);
+  $('#disc').style.opacity = (t > Ln('it3').s - .2 && t < T.res[1]) ? 1 : 0;
+  // CTA + ending
+  const c1 = p01(t, T.cta1, T.cta1 + .35), c2 = p01(t, T.cta2, T.cta2 + .35), e = p01(t, T.end, T.end + .6);
+  $('#ctabg').style.opacity = c1 * (1 - e);
+  $('#cta1').style.opacity = c1 * (1 - e); $('#cta1').style.transform = `scale(${lerp(1.6, 1, eob(c1))})`; $('#cta1').style.filter = `blur(${(1 - c1) * 10}px)`;
+  $('#cta2').style.opacity = c2 * (1 - e); $('#cta2').style.transform = `translateY(${(1 - eob(c2)) * 120}px) scale(${1 + .04 * Math.sin(t * 6) * c2})`;
+  const capHide = t > Ln('ru6').e + .5; $('#cap').style.opacity = capHide ? 0 : 1;
+  $('#fade').style.opacity = Math.max(1 - p01(t, 0, .45), e);
+  $('#grain').getContext('2d').putImageData(grainFrames[Math.floor(t * 24) % grainFrames.length], 0, 0);
+  if (!capHide) renderCaptions(t); else $('#who span').style.display = 'none';
+  return shot.name;
+}
+window.__init = (data) => { TL = data; WORDS = data.words; LINES = data.lines; DUR = data.duration;
+  buildWorld(); buildCast(); build(); buildInserts(); buildCaptions(); buildGrain();
+  return { events: EV, duration: DUR, shots: SHOTS.map(s => [s.t0, s.name]) }; };
+window.__render = render;
+window.__thumb = (t) => { render(t); $('#cap').style.display = 'none'; $('#who').style.display = 'none'; $('#disc').style.display = 'none'; $('#fade').style.opacity = 0;
+  $('#stage').insertAdjacentHTML('beforeend', `<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,3,15,.88) 0%,rgba(5,3,15,.35) 30%,rgba(5,3,15,0) 42%,rgba(5,3,15,0) 66%,rgba(5,3,15,.9) 86%)"></div>
+  <div style="position:absolute;left:0;right:0;top:120px;text-align:center;font:900 112px/0.95 Inter;letter-spacing:-.03em;-webkit-text-stroke:10px #000;paint-order:stroke fill">
+    <div><span style="color:#2E9BFF">RUSSIAN</span> <span style="color:#fff;font-size:80px">VS</span></div><div style="color:#FF8A1F">ITALIAN</div></div>
+  <div style="position:absolute;left:0;right:0;top:1440px;text-align:center;font:900 96px/1 Inter;letter-spacing:-.03em;-webkit-text-stroke:10px #000;paint-order:stroke fill">
+    <div style="color:#fff">WHO MAKES MORE</div><div style="color:#fff">WITH <span style="color:#B26BFF">AI?</span></div>
+    <div style="margin-top:26px;display:inline-block;font-size:62px;-webkit-text-stroke:0;padding:12px 30px;border-radius:22px;background:#0b2a1a;border:4px solid #2EE88A;color:#2EE88A;box-shadow:0 0 50px rgba(46,232,138,.6)">+£2,850</div></div>`); };
+</script></body></html>
