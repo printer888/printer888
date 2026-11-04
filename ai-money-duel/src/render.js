@@ -32,27 +32,31 @@ async function main() {
     await page.evaluate(t => window.__thumb(t), +(args[0] || 0));
     await page.screenshot({ path: path.join(ROOT, 'output', 'thumbnail.png') });
   } else {
-    const fps = +(args[0] || 30), workers = +(args[1] || 4);
-    const { info } = await open(browser); // events are deterministic
+    const fps = +(args[0] || 30), workers = +(args[1] || 4), NSEG = 24;
+    const { info } = await open(browser);
     fs.writeFileSync(path.join(BUILD, 'events.json'), JSON.stringify(info, null, 1));
-    const N = Math.ceil(info.duration * fps);
-    const per = Math.ceil(N / workers); const t0 = Date.now(); let done = 0;
-    await Promise.all([...Array(workers).keys()].map(async w => {
-      const a = w * per, b = Math.min(N, a + per); if (a >= b) return;
+    const N = Math.ceil(info.duration * fps), per = Math.ceil(N / NSEG), t0 = Date.now();
+    const segs = [...Array(NSEG).keys()].filter(k => k * per < N);
+    const todo = segs.filter(k => !fs.existsSync(path.join(BUILD, `part_${k}.mp4`)));
+    console.log('segments to render', todo.length, 'of', segs.length);
+    let q = 0;
+    await Promise.all([...Array(workers).keys()].map(async () => {
       const { page } = await open(browser);
-      const out = path.join(BUILD, `seg_${w}.mp4`);
-      const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-',
-        '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-r', String(fps), out], { stdio: ['pipe', 'inherit', 'inherit'] });
-      for (let f = a; f < b; f++) {
-        await page.evaluate(t => window.__render(t), f / fps);
-        const buf = await page.screenshot({ type: 'png' });
-        if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
-        if (++done % 100 === 0) console.log(`${done}/${N} frames  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+      while (q < todo.length) {
+        const k = todo[q++], a = k * per, b = Math.min(N, a + per), tmp = path.join(BUILD, `part_${k}.tmp.mp4`);
+        const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-',
+          '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-r', String(fps), tmp], { stdio: ['pipe', 'inherit', 'inherit'] });
+        for (let f = a; f < b; f++) {
+          await page.evaluate(t => window.__render(t), f / fps);
+          const buf = await page.screenshot({ type: 'jpeg', quality: 95 });
+          if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
+        }
+        ff.stdin.end(); await new Promise(r => ff.on('close', r));
+        fs.renameSync(tmp, path.join(BUILD, `part_${k}.mp4`));
+        console.log(`segment ${k} done (${b}/${N})  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
       }
-      ff.stdin.end(); await new Promise(r => ff.on('close', r));
     }));
-    const list = [...Array(workers).keys()].map(w => `file '${path.join(BUILD, `seg_${w}.mp4`)}'`).filter((_, w) => w * per < N).join('\n');
-    fs.writeFileSync(path.join(BUILD, 'segs.txt'), list);
+    fs.writeFileSync(path.join(BUILD, 'segs.txt'), segs.map(k => `file '${path.join(BUILD, `part_${k}.mp4`)}'`).join('\n'));
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(BUILD, 'segs.txt'), '-c', 'copy', path.join(BUILD, 'video_noaudio.mp4')]);
     console.log('frames', N, 'time', (Date.now() - t0) / 1000);
   }
