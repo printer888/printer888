@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+fomo-copytrader/data/
+fomo-copytrader/.env
+fomo-copytrader/secrets/
+*.db

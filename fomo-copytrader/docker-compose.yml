@@ -1,0 +1,58 @@
+# Production-style stack: app + PostgreSQL + Redis + nightly DB backups + HTTPS reverse proxy.
+# Usage: cp .env.example .env  (fill in)  &&  docker compose up -d --build
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://copytrader:${POSTGRES_PASSWORD}@db:5432/copytrader
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_started }
+    secrets: [wallet_keypair]  # only read when EXECUTION_MODE=live
+    expose: ["8000"]
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: copytrader
+      POSTGRES_USER: copytrader
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U copytrader"]
+      interval: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redisdata:/data]
+
+  backup:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes: [./backups:/backups, ./deploy/backup.sh:/backup.sh:ro]
+    entrypoint: ["/bin/sh", "/backup.sh"]
+    depends_on: [db]
+
+  caddy:  # automatic HTTPS (Let's Encrypt) for the dashboard
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes: [./deploy/Caddyfile:/etc/caddy/Caddyfile:ro, caddydata:/data]
+    depends_on: [app]
+
+secrets:
+  wallet_keypair:
+    file: ./secrets/wallet_keypair.json
+
+volumes: { pgdata: {}, redisdata: {}, caddydata: {} }

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1115">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Copy Trader Console</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#14171c;--muted:#5d6673;--line:#e2e5ea;--accent:#2a6df4;--pos:#0f8a4f;--neg:#c9302c;--warn:#b7791f;--chip:#eef1f5}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--panel:#171a21;--ink:#e8ebf0;--muted:#98a2b3;--line:#262b35;--accent:#5b8cff;--pos:#3ccf8e;--neg:#ff6b6b;--warn:#f0b44c;--chip:#20252f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+header h1{font-size:16px;margin:0;margin-right:auto}
+main{max-width:1200px;margin:0 auto;padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+main>*,.grid2>*{min-width:0}
+#trader .mono{word-break:break-all}
+.chip{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--chip);font-size:12px;font-weight:600}
+.chip.on{background:color-mix(in srgb,var(--pos) 18%,transparent);color:var(--pos)}
+.chip.off{color:var(--muted)}
+.chip.bad{background:color-mix(in srgb,var(--neg) 18%,transparent);color:var(--neg)}
+.chip.warn{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+section h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:10px}
+.kpi .l{font-size:12px;color:var(--muted)}.kpi .v{font-size:20px;font-weight:650;font-variant-numeric:tabular-nums}
+.pos{color:var(--pos)}.neg{color:var(--neg)}.muted{color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{font:inherit;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:600}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.danger{background:var(--neg);border-color:var(--neg);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select{font:inherit;padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-width:0}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:13px}
+th{color:var(--muted);font-weight:600;font-size:12px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:820px){.grid2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){main{padding:12px}.kpi .v{font-size:17px}}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px 12px}
+.form label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:3px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.note{font-size:12px;color:var(--muted)}
+pre{white-space:pre-wrap;word-break:break-word;margin:0;font-size:12px}
+.banner{padding:10px 12px;border-radius:10px;font-weight:600}
+.banner.bad{background:color-mix(in srgb,var(--neg) 15%,transparent);color:var(--neg)}
+.banner.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);max-width:min(92vw,900px)}
+.tabs button{border-radius:999px;padding:5px 12px}
+.tabs button.act{background:var(--accent);color:#fff;border-color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Copy Trader Console</h1>
+  <span id="mode" class="chip">mode</span>
+  <span id="c-mon" class="chip off">monitor</span>
+  <span id="c-copy" class="chip off">copying</span>
+  <span id="c-ws" class="chip off">live feed</span>
+</header>
+<main>
+  <div id="banners"></div>
+
+  <section>
+    <h2>Portfolio <span class="note">(P/L net of recorded fees and slippage; unrealised is not profit until sold)</span></h2>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>Selected trader</h2>
+      <div id="trader" class="muted">No trader selected</div>
+      <div class="row" style="margin-top:10px">
+        <input id="t-wallet" placeholder="Trader Solana wallet address" style="flex:1 1 260px">
+        <input id="t-label" placeholder="Label (optional)" style="flex:1 1 140px">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button id="b-analyse">Analyse</button>
+        <button id="b-select" class="primary">Select trader</button>
+      </div>
+      <p class="note">FOMO does not publish an API. Paste the wallet address shown on the trader's FOMO profile; it is monitored on-chain.</p>
+    </section>
+    <section>
+      <h2>Controls</h2>
+      <div class="row">
+        <button data-a="start_monitoring">Start monitoring</button>
+        <button data-a="stop_monitoring">Stop monitoring</button>
+        <button data-a="start_copying" class="primary">Start copying</button>
+        <button data-a="pause">Pause</button>
+        <button data-a="resume">Resume</button>
+        <button data-a="stop_copying">Stop copying</button>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="b-estop" class="danger">Emergency stop</button>
+        <button id="b-eflat" class="danger">Emergency stop + close all</button>
+        <button data-a="clear_emergency">Clear emergency</button>
+        <button data-a="reconcile">Reconcile</button>
+      </div>
+      <div class="row" style="margin-top:10px" id="live-row">
+        <button id="b-arm">Arm live trading</button>
+        <button data-a="disarm_live">Disarm live</button>
+        <span class="note" id="live-note"></span>
+      </div>
+      <p class="note"><b>Pause</b>: no new entries; trader exits still mirrored. <b>Stop copying</b>: nothing mirrored; open positions are left to stop-loss/take-profit rules.</p>
+    </section>
+  </div>
+
+  <section>
+    <div class="row" style="justify-content:space-between"><h2>Positions</h2>
+      <div class="tabs row"><button data-pos="open" class="act">Open</button><button data-pos="closed">Closed</button></div></div>
+    <div class="tbl"><table id="positions"></table></div>
+  </section>
+
+  <div class="grid2">
+    <section><h2>Trader activity</h2><div class="tbl"><table id="events"></table></div></section>
+    <section><h2>Copy orders</h2><div class="tbl"><table id="orders"></table></div></section>
+  </div>
+
+  <section>
+    <h2>Risk limits</h2>
+    <form id="risk" class="form"></form>
+    <div class="row" style="margin-top:10px"><button id="b-risk" class="primary">Save risk limits</button><span id="risk-msg" class="note"></span></div>
+  </section>
+
+  <div class="grid2">
+    <section><h2>Daily realised P/L</h2><div class="tbl"><table id="daily"></table></div>
+      <div class="row" style="margin-top:8px"><button id="b-report">Performance report</button></div></section>
+    <section><h2>Notifications &amp; audit</h2><div id="audit" style="max-height:320px;overflow:auto"></div></section>
+  </div>
+</main>
+
+<dialog id="dlg"><div class="row" style="justify-content:space-between"><b id="dlg-t"></b><button onclick="dlg.close()">Close</button></div><div id="dlg-b" style="margin-top:10px"></div></dialog>
+
+<script>
+const $=s=>document.querySelector(s);
+let TOKEN=null; try{TOKEN=localStorage.getItem('ct_token')}catch(e){}
+let posTab='open', STATE=null;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const short=a=>a?(a.length>12?a.slice(0,4)+'…'+a.slice(-4):a):'—';
+const usd=(v,s)=>v==null?'—':`<span class="${!s?'':v>0?'pos':v<0?'neg':''}">${s&&v>0?'+':''}${v<0?'-':''}$${Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:2,minimumFractionDigits:2})}</span>`;
+const px=v=>v==null?'—':(v>=1?'$'+v.toFixed(4):'$'+Number(v).toPrecision(4));
+const num=v=>v==null?'—':Number(v).toLocaleString(undefined,{maximumFractionDigits:4});
+const pct=v=>v==null?'—':`<span class="${v>0?'pos':v<0?'neg':''}">${v>0?'+':''}${Number(v).toFixed(2)}%</span>`;
+const pctn=v=>v==null?'—':`${v>0?'+':''}${Number(v).toFixed(2)}%`;
+const tm=v=>v?new Date(v).toLocaleString():'—';
+
+async function api(path,opt={}){
+  const h={'Content-Type':'application/json'}; if(TOKEN)h.Authorization='Bearer '+TOKEN;
+  const r=await fetch(path,{...opt,headers:h});
+  if(r.status===401){TOKEN=prompt('Dashboard access token');try{localStorage.setItem('ct_token',TOKEN||'')}catch(e){};return api(path,opt)}
+  const ct=r.headers.get('content-type')||''; const body=ct.includes('json')?await r.json():await r.text();
+  if(!r.ok)throw new Error(typeof body==='string'?body:(body.detail?JSON.stringify(body.detail):JSON.stringify(body)));
+  return body;
+}
+function chip(el,on,t,bad){el.textContent=t;el.className='chip '+(bad?'bad':on?'on':'off')}
+
+function renderStatus(d){
+  STATE=d; const st=d.status, s=d.summary;
+  $('#mode').textContent=d.mode==='live'?(st.live_armed?'LIVE ARMED':'LIVE (disarmed)'):'PAPER';
+  $('#mode').className='chip '+(d.mode==='live'?(st.live_armed?'bad':'warn'):'');
+  chip($('#c-mon'),st.monitoring,st.monitoring?'monitoring':'monitor off');
+  chip($('#c-copy'),st.copying&&!st.paused,st.emergency_stop?'EMERGENCY STOP':st.copying?(st.paused?'paused':'copying'):'not copying',st.emergency_stop);
+  const b=[]; if(st.emergency_stop)b.push(['bad','Emergency stop active. No new orders.']);
+  if(st.suspended_reason&&!st.emergency_stop)b.push(['warn','Suspended: '+st.suspended_reason]);
+  if(!d.telegram_enabled)b.push(['warn','Telegram not configured: alerts only appear here.']);
+  $('#banners').innerHTML=b.map(([c,t])=>`<div class="banner ${c}">${esc(t)}</div>`).join('');
+  const k=[['Equity',usd(s.equity_usd)],['Allocated',usd(s.allocated_usd)+` <span class="note">of $${s.capital_usd}</span>`],
+    ['Realised P/L (net)',usd(s.realized_pnl_usd,1)],['Unrealised (pre-exit)',usd(s.unrealized_pnl_usd,1)],
+    ['Unrealised est. net',usd(s.unrealized_net_est_usd,1)],['Today realised',usd(s.today_realized_pnl_usd,1)],
+    ['Total costs',usd(s.total_costs_usd)],['Open / closed',`${s.open_positions} / ${s.closed_positions}`],
+    ['Win rate (closed)',s.closed_win_rate_pct==null?'—':s.closed_win_rate_pct+'%'],['Avg exec. diff vs trader',pctn(s.avg_execution_diff_pct)]];
+  $('#kpis').innerHTML=k.map(([l,v])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div></div>`).join('');
+  const t=d.trader, e=d.latest_event;
+  $('#trader').innerHTML=t?`<div><b>${esc(t.label||short(t.wallet))}</b> <span class="mono muted">${esc(t.wallet)}</span></div>
+    <div class="note">Last activity: ${tm(t.last_activity_at)} · monitor ${d.monitor.running?'running':'stopped'} · websocket ${esc(d.monitor.ws)} · errors ${d.monitor.errors}</div>
+    ${e?`<div style="margin-top:6px">Latest: <b>${esc(e.kind)}</b> ${esc(e.token_symbol||short(e.token_mint))} ${usd(e.notional_usd)} · ${tm(e.block_time)} · <span class="chip">${esc(e.copy_status)}</span></div>`:''}`:'No trader selected';
+  $('#live-note').textContent=d.live_permitted?'Live execution is configured on the server.':'Live execution disabled in server config (paper only).';
+  $('#b-arm').disabled=!d.live_permitted;
+  $('#daily').innerHTML='<tr><th>Date</th><th>Realised P/L</th></tr>'+(s.daily_realized.slice(-14).reverse().map(r=>`<tr><td>${r.date}</td><td>${usd(r.pnl_usd,1)}</td></tr>`).join('')||'<tr><td colspan=2 class="muted">No closed trades yet</td></tr>');
+}
+
+async function loadPositions(){
+  const rows=await api('/api/positions?state='+posTab);
+  const head=posTab==='open'
+    ?'<tr><th>Token</th><th>Trader entry</th><th>My entry*</th><th>Trader size</th><th>My size</th><th>Price</th><th>Unreal. P/L</th><th>Realised</th><th>Costs</th><th>Trader last</th><th>Liquidity</th><th></th></tr>'
+    :'<tr><th>Token</th><th>Trader entry</th><th>My entry*</th><th>Invested</th><th>Net P/L</th><th>Costs</th><th>Exit reason</th><th>Closed</th></tr>';
+  $('#positions').innerHTML=head+(rows.map(p=>posTab==='open'
+    ?`<tr><td><b>${esc(p.token_symbol||short(p.token_mint))}</b> <span class="note">${p.mode}</span></td><td>${px(p.trader_entry_price_usd)}</td><td>${px(p.my_entry_price_usd)}</td>
+      <td>${num(p.trader_current_amount)}<span class="note"> / ${num(p.trader_initial_amount)}</span></td><td>${num(p.my_amount)}</td><td>${px(p.current_price_usd)}</td>
+      <td>${usd(p.unrealized_pnl_usd,1)}</td><td>${usd(p.realized_pnl_usd,1)}</td><td>${usd(p.fees_usd+p.slippage_usd)}</td>
+      <td>${esc(p.trader_last_action||'')}${p.pending_exit?' <span class="chip warn">exit retry</span>':''}</td><td>${usd(p.liquidity_usd)}</td>
+      <td><button onclick="closePos(${p.id})">Close</button></td></tr>`
+    :`<tr><td><b>${esc(p.token_symbol||short(p.token_mint))}</b></td><td>${px(p.trader_entry_price_usd)}</td><td>${px(p.my_entry_price_usd)}</td><td>${usd(p.my_invested_usd)}</td>
+      <td>${usd(p.realized_pnl_usd,1)}</td><td>${usd(p.fees_usd+p.slippage_usd)}</td><td>${esc(p.exit_reason||'')}</td><td>${tm(p.closed_at)}</td></tr>`).join('')
+    ||`<tr><td colspan=12 class="muted">No ${posTab} positions</td></tr>`);
+}
+async function loadEvents(){
+  const rows=await api('/api/events?limit=40');
+  $('#events').innerHTML='<tr><th>Time</th><th>Action</th><th>Token</th><th>Value</th><th>Price</th><th>Copy</th></tr>'+(rows.map(e=>
+   `<tr title="${esc(e.copy_note||'')}"><td>${tm(e.block_time)}</td><td><b>${esc(e.kind)}</b></td><td>${esc(e.token_symbol||short(e.token_mint))}</td><td>${usd(e.notional_usd)}</td><td>${px(e.price_usd)}</td>
+   <td><span class="chip ${e.copy_status==='copied'?'on':e.copy_status==='failed'?'bad':''}">${esc(e.copy_status)}</span> <span class="note">${esc((e.copy_note||'').slice(0,60))}</span></td></tr>`).join('')||'<tr><td colspan=6 class="muted">No activity yet</td></tr>');
+}
+async function loadOrders(){
+  const rows=await api('/api/orders?limit=40');
+  $('#orders').innerHTML='<tr><th>#</th><th>Side</th><th>Reason</th><th>Status</th><th>Value</th><th>Price</th><th>vs trader</th><th>Net P/L</th></tr>'+(rows.map(o=>
+   `<tr title="${esc(o.error||'')}"><td>${o.id}</td><td>${o.side}</td><td>${esc(o.reason)}</td><td><span class="chip ${o.status==='filled'?'on':o.status==='failed'?'bad':''}">${o.status}</span></td>
+   <td>${usd(o.notional_usd)}</td><td>${px(o.price_usd)}</td><td>${pctn(o.execution_diff_pct)}</td><td>${o.side==='SELL'?usd(o.realized_pnl_usd,1):'—'}</td></tr>`).join('')||'<tr><td colspan=8 class="muted">No orders yet</td></tr>');
+}
+async function loadAudit(){
+  const rows=await api('/api/audit?limit=60');
+  $('#audit').innerHTML=rows.map(a=>`<div style="padding:5px 0;border-bottom:1px solid var(--line)"><span class="note">${tm(a.at)}</span> <span class="chip ${a.level==='WARNING'?'warn':''}">${esc(a.category)}</span> ${esc(a.message)}</div>`).join('')||'<div class="muted">Nothing yet</div>';
+}
+const RISK_LABELS={total_capital_usd:'Total capital (USD)',max_allocation_pct:'Max allocation %',max_open_positions:'Max open positions',sizing_mode:'Sizing mode',fixed_position_usd:'Fixed size (USD)',proportional_ratio:'Proportional ratio',min_position_usd:'Min position (USD)',max_position_usd:'Max position (USD)',max_slippage_bps:'Max entry slippage (bps)',max_exit_slippage_bps:'Max exit slippage (bps)',max_price_impact_pct:'Max price impact %',max_entry_drift_pct:'Max price drift since trader %',max_signal_age_sec:'Max signal age (s)',max_round_trip_cost_pct:'Max round-trip cost %',max_daily_loss_usd:'Max daily loss (USD)',max_drawdown_pct:'Max drawdown %',max_consecutive_failures:'Max consecutive failures',min_liquidity_usd:'Min liquidity (USD)',min_volume_24h_usd:'Min 24h volume (USD)',min_pair_age_hours:'Min pool age (h)',require_mint_authority_revoked:'Require mint authority revoked',require_freeze_authority_revoked:'Require freeze authority revoked',allow_token_2022:'Allow Token-2022',max_top10_holder_pct:'Max top-10 holder %',stop_loss_pct:'Stop loss % (blank=off)',take_profit_pct:'Take profit % (blank=off)',trailing_stop_pct:'Trailing stop % (blank=off)',max_hold_hours:'Max hold hours (blank=off)',trader_inactive_hours:'Trader inactive alert (h)',price_move_alert_pct:'Price move alert %'};
+async function loadRisk(){
+  const r=await api('/api/risk');
+  $('#risk').innerHTML=Object.entries(r).map(([k,v])=>{const l=RISK_LABELS[k]||k;
+    if(typeof v==='boolean')return `<label>${l}<select name="${k}" data-t="b"><option value="true" ${v?'selected':''}>yes</option><option value="false" ${!v?'selected':''}>no</option></select></label>`;
+    if(k==='sizing_mode')return `<label>${l}<select name="${k}"><option ${v==='fixed'?'selected':''}>fixed</option><option ${v==='proportional'?'selected':''}>proportional</option></select></label>`;
+    return `<label>${l}<input name="${k}" data-t="n" inputmode="decimal" value="${v??''}"></label>`}).join('');
+}
+$('#b-risk').onclick=async()=>{const o={};for(const el of $('#risk').elements){if(!el.name)continue;
+  o[el.name]=el.dataset.t==='b'?el.value==='true':el.dataset.t==='n'?(el.value===''?null:Number(el.value)):el.value}
+  try{await api('/api/risk',{method:'PUT',body:JSON.stringify(o)});$('#risk-msg').textContent='Saved '+new Date().toLocaleTimeString()}catch(e){$('#risk-msg').textContent='Error: '+e.message}};
+
+async function act(a,body){try{await api('/api/control/'+a,{method:'POST',body:JSON.stringify(body||{})});refresh()}catch(e){alert(e.message)}}
+document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>act(b.dataset.a));
+$('#b-estop').onclick=()=>confirm('Emergency stop: halt all new orders and disarm live trading?')&&act('emergency_stop',{flatten:false});
+$('#b-eflat').onclick=()=>confirm('Emergency stop AND attempt to sell every open position now?')&&act('emergency_stop',{flatten:true});
+$('#b-arm').onclick=()=>{const c=prompt('Type the live trading acknowledgement phrase to arm real execution:');if(c)act('arm_live',{confirm:c})};
+document.querySelectorAll('[data-pos]').forEach(b=>b.onclick=()=>{posTab=b.dataset.pos;document.querySelectorAll('[data-pos]').forEach(x=>x.classList.toggle('act',x===b));loadPositions()});
+window.closePos=async id=>{if(!confirm('Sell this entire copied position now?'))return;try{const r=await api(`/api/positions/${id}/close`,{method:'POST'});if(!r.ok)alert('Exit did not fill; it will be retried automatically.')}catch(e){alert(e.message)}refresh()};
+$('#b-select').onclick=async()=>{const w=$('#t-wallet').value.trim(),l=$('#t-label').value.trim()||null;if(!w)return;
+  try{await api('/api/trader',{method:'POST',body:JSON.stringify({wallet:w,label:l})})}catch(e){
+    if(String(e.message).includes('open copied positions')&&confirm(e.message+'\n\nSwitch anyway?'))await api('/api/trader',{method:'POST',body:JSON.stringify({wallet:w,label:l,force:true})});else alert(e.message)}
+  refresh()};
+$('#b-analyse').onclick=async()=>{const w=$('#t-wallet').value.trim()||STATE?.trader?.wallet;if(!w)return;
+  $('#dlg-t').textContent='Trader analysis '+short(w);$('#dlg-b').innerHTML='Fetching on-chain history…';dlg.showModal();
+  try{const r=await api(`/api/trader/${w}/analysis?max_tx=300`);
+    const rows=[['Score (0-100)',r.score],['Window',`${tm(r.window_start)} → ${tm(r.window_end)}`],['Transactions',r.transactions_analysed],['Buys / sells / failed',`${r.buys} / ${r.sells} / ${r.failed_tx}`],
+      ['Closed round trips',r.closed_trades],['Win rate',r.win_rate_pct==null?'—':r.win_rate_pct+'%'],['Avg win / loss',`${pct(r.avg_win_pct)} / ${pct(r.avg_loss_pct)}`],
+      ['Avg profit / loss (USD≈)',`${usd(r.avg_profit_usd)} / ${usd(r.avg_loss_usd)}`],['Largest win / loss',`${usd(r.largest_win_usd)} / ${usd(r.largest_loss_usd)}`],
+      ['Profit factor',r.profit_factor??'—'],['Max drawdown',`${usd(r.max_drawdown_usd)} (${r.max_drawdown_pct_of_peak??'—'}% of peak)`],['Total P/L (USD≈)',usd(r.total_pnl_usd,1)],
+      ['Trades / day',r.trades_per_day??'—'],['Avg / median hold',`${r.avg_hold_minutes??'—'} / ${r.median_hold_minutes??'—'} min`],['Distinct tokens',r.distinct_tokens],['Open positions',r.open_positions.length],
+      ['Est. copy avg return',pct(r.copyability.estimated_copy_avg_return_pct)],['Est. copy win rate',r.copyability.estimated_copy_win_rate_pct==null?'—':r.copyability.estimated_copy_win_rate_pct+'%']];
+    $('#dlg-b').innerHTML=`<table>${rows.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('')}</table>
+      <h3 style="font-size:13px">Red flags</h3>${r.red_flags.length?'<ul>'+r.red_flags.map(f=>`<li>${esc(f)}</li>`).join('')+'</ul>':'<p class="muted">None detected</p>'}
+      <p class="note">${r.notes.map(esc).join('<br>')}</p>`}catch(e){$('#dlg-b').textContent='Error: '+e.message}};
+$('#b-report').onclick=async()=>{const md=await api('/api/report.md');$('#dlg-t').textContent='Performance report';$('#dlg-b').innerHTML=`<pre>${esc(md)}</pre>`;dlg.showModal()};
+
+async function refresh(){try{renderStatus(await api('/api/status'));await Promise.all([loadPositions(),loadEvents(),loadOrders(),loadAudit()])}catch(e){console.error(e)}}
+let wsT;function connectWS(){const ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/ws');
+  ws.onopen=()=>{ws.send(JSON.stringify({token:TOKEN}));chip($('#c-ws'),true,'live feed')};
+  ws.onmessage=ev=>{const m=JSON.parse(ev.data);if(m.topic==='status'&&m.data)renderStatus(m.data);else{clearTimeout(wsT);wsT=setTimeout(refresh,300)}};
+  ws.onclose=()=>{chip($('#c-ws'),false,'feed reconnecting');setTimeout(connectWS,3000)}}
+refresh().then(loadRisk).then(connectWS);setInterval(refresh,30000);
+</script>
+</body>
+</html>
